@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AI Myanmar Subtitle Studio v7.0</title>
+  <title>AI Myanmar Subtitle & TikTok Studio v8.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -34,14 +34,14 @@
     
     <!-- Top App Header -->
     <div class="text-center pt-3 pb-5">
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold mb-3">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        v7.0 Reading Comfort & Custom Name
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-300 text-[11px] font-bold mb-3">
+        <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping"></span>
+        v8.0 TikTok Creator Studio Edition
       </div>
       <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">
         <strong>Video to Myanmar SRT</strong>
       </h1>
-      <p class="text-xs font-bold text-slate-400 mt-1">စာဖတ်ရအဆင်ပြေပြီး သဘာဝကျသော မြန်မာစာတန်းထိုးစနစ်</p>
+      <p class="text-xs font-bold text-slate-400 mt-1">သဘာဝမြန်မာစာတန်းထိုး + TikTok Title & Caption Generator</p>
     </div>
 
     <!-- API & Model Settings Card -->
@@ -104,7 +104,7 @@
           class="w-full bg-slate-950/70 border border-slate-700/70 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-400">
       </div>
 
-      <!-- NEW: Reading Comfort Buffer Selector -->
+      <!-- Reading Comfort Buffer Selector -->
       <div class="pt-2 border-t border-slate-800/60">
         <label class="block text-xs font-bold text-slate-100 mb-1">⏱️ စာမလာခင်နှင့် မပျောက်ခင် အချိန်အပိုထားရှိမှု (စာဖတ်ချိန်)</label>
         <select id="bufferSelect" onchange="onBufferChange()" class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-3 py-2.5 text-xs text-emerald-300 font-semibold focus:outline-none focus:border-cyan-400">
@@ -112,7 +112,6 @@
           <option value="extra">🐢 စာဖတ်ချိန် ပိုကြာကြာထားမည် (မလာခင် 0.3s ကြိုပေါ် / မပျောက်ခင် 0.7s ပိုထားမည်)</option>
           <option value="tight">⚡ အသံနှင့် ကွက်တိနီးပါး (မလာခင် 0.05s / မပျောက်ခင် 0.15s)</option>
         </select>
-        <p class="text-[10px] text-slate-400 mt-1">💡 စာတန်းထိုးများ တစ်ခုနှင့်တစ်ခု လုံးဝမထပ်သွားအောင် အလိုအလျောက် ညှိပေးပါသည်</p>
       </div>
 
       <!-- Feature 1: Voice Sync -->
@@ -159,7 +158,7 @@
     <!-- Main Action Button -->
     <button id="startBtn" onclick="startProcess()" 
       class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 active:scale-[0.99] text-slate-950 font-extrabold py-4 rounded-2xl glow-btn transition text-sm flex items-center justify-center gap-2">
-      <span>✨ SRT ထုတ်ပြီး သဘာဝကျကျ မြန်မာပြန်မည်</span>
+      <span>✨ SRT + TikTok Caption ထုတ်မည်</span>
     </button>
 
     <!-- Visual Stepper Progress -->
@@ -179,7 +178,7 @@
       <div class="flex items-center justify-between text-xs">
         <span id="step2Text" class="text-slate-400 flex items-center gap-2">
           <span id="step2Icon" class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">3</span>
-          <span id="step2Label">ဇာတ်လမ်းအကြောင်းအရာနှင့် လေသံကို သုံးသပ်ခြင်း</span>
+          <span id="step2Label">ဇာတ်လမ်းသုံးသပ်ခြင်းနှင့် TikTok Caption ထုတ်ခြင်း</span>
         </span>
       </div>
       <div class="flex items-center justify-between text-xs">
@@ -193,14 +192,11 @@
       </div>
     </div>
 
-    <!-- Detected Story Context Badge -->
-    <div id="contextSummaryBox" class="mt-3 p-3 rounded-xl bg-cyan-950/40 border border-cyan-800/40 text-[11px] text-cyan-200 hidden leading-relaxed"></div>
-
     <!-- Error / Alert Box -->
     <div id="statusBox" class="mt-4 p-3.5 rounded-2xl text-xs leading-relaxed hidden border"></div>
 
     <!-- Output / Result Card -->
-    <div id="resultArea" class="glass rounded-2xl p-4 mt-4 hidden shadow-xl space-y-3">
+    <div id="resultArea" class="glass rounded-2xl p-4 mt-4 hidden shadow-xl space-y-4">
       <!-- Tabs -->
       <div class="flex bg-slate-950/80 p-1 rounded-xl border border-slate-800">
         <button id="tabMyBtn" onclick="switchTab('my')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-cyan-500 text-slate-950 transition">
@@ -212,7 +208,7 @@
       </div>
 
       <!-- Editable Textarea -->
-      <textarea id="srtOutput" class="w-full h-64 bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 text-xs font-bold text-slate-100 font-mono leading-relaxed focus:outline-none focus:border-cyan-500/50"></textarea>
+      <textarea id="srtOutput" class="w-full h-60 bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 text-xs font-bold text-slate-100 font-mono leading-relaxed focus:outline-none focus:border-cyan-500/50"></textarea>
       
       <div class="flex items-center justify-between">
         <button onclick="manualClean()" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-amber-300 px-2.5 py-1 rounded-lg border border-slate-700 font-semibold transition">
@@ -221,7 +217,7 @@
         <p class="text-[10px] text-slate-500">💡 စာသားများကို တိုက်ရိုက် ပြင်ဆင်နိုင်သည်</p>
       </div>
 
-      <!-- NEW: Custom Filename Input Before Download -->
+      <!-- Custom Filename Input Before Download -->
       <div class="pt-2 border-t border-slate-800/80">
         <label class="block text-[11px] font-bold text-cyan-300 mb-1.5">
           📝 ဒေါင်းလုဒ်ဆွဲမည့် SRT ဖိုင်နာမည် စိတ်ကြိုက်ပေးရန်
@@ -234,14 +230,46 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="grid grid-cols-2 gap-2.5 pt-1">
+      <div class="grid grid-cols-2 gap-2.5">
         <button onclick="downloadSRT()" class="bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 text-xs py-3 rounded-xl font-extrabold shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-1.5">
           📥 SRT ဖိုင် ဒေါင်းမည်
         </button>
         <button onclick="copyToClipboard()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-cyan-300 border border-slate-700 text-xs py-3 rounded-xl font-extrabold transition flex items-center justify-center gap-1.5">
-          📋 Copy ကူးမည်
+          📋 SRT Copy ကူးမည်
         </button>
       </div>
+
+      <!-- NEW: TikTok Viral Titles & Caption + Hashtags Card -->
+      <div class="pt-3 border-t border-slate-700/80 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-extrabold text-pink-400 flex items-center gap-1.5">
+            🔥 TikTok ခေါင်းစဉ်နှင့် Caption + # (Ready to Use)
+          </span>
+        </div>
+
+        <!-- Viral On-Screen Video Titles -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-[11px] font-bold text-slate-300">🎯 ဗီဒီယိုပေါ်တွင် တပ်ရန် ဆွဲဆောင်မှုရှိသော ခေါင်းစဉ်များ</label>
+            <button onclick="copyTextById('tiktokTitlesBox', 'ဗီဒီယို ခေါင်းစဉ်များကို Copy ကူးပြီးပါပြီ!')" class="text-[10px] bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 px-2.5 py-1 rounded-lg border border-pink-500/30 font-bold transition">
+              📋 ခေါင်းစဉ် Copy
+            </button>
+          </div>
+          <textarea id="tiktokTitlesBox" class="w-full h-24 bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 text-xs text-amber-200 font-semibold leading-relaxed focus:outline-none focus:border-pink-500/50"></textarea>
+        </div>
+
+        <!-- TikTok Caption + Hashtags -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-[11px] font-bold text-slate-300">📱 TikTok Caption + Hashtags (#)</label>
+            <button onclick="copyTextById('tiktokCaptionBox', 'TikTok Caption နှင့် # များကို Copy ကူးပြီးပါပြီ!')" class="text-[10px] bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 px-2.5 py-1 rounded-lg border border-cyan-500/30 font-bold transition">
+              📋 Caption + # Copy
+            </button>
+          </div>
+          <textarea id="tiktokCaptionBox" class="w-full h-28 bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 leading-relaxed focus:outline-none focus:border-cyan-500/50"></textarea>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -302,7 +330,6 @@
       }
     }
 
-    // 🔄 Auto-Retry Fetch
     async function fetchWithRetry(url, options, maxRetries = 3, onRetryMsg = null) {
       let lastErr;
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -320,7 +347,6 @@
       throw new Error("အင်တာနက် သို့မဟုတ် VPN လိုင်းပြတ်တောက်နေပါသည် (Failed to fetch)။ VPN လိုင်းပြန်ချိတ်ပြီး ထပ်စမ်းကြည့်ပါ။");
     }
 
-    // 🛡️ Pure Myanmar Sanitizer
     function sanitizeSubtitleLine(line, isMyanmar = true) {
       if (!line) return "";
       const nameStyle = document.getElementById('nameStyleSelect').value;
@@ -400,7 +426,6 @@
       showToast("✓ API Keys နှင့် Model ကို သိမ်းဆည်းပြီးပါပြီ!");
     }
 
-    // 📁 ဖိုင်ရွေးလိုက်သည်နှင့် Memory ထဲ သိမ်းဆည်းပြီး ဖိုင်နာမည်ကိုပါ အလိုအလျောက် ဖြည့်ပေးခြင်း
     async function handleFileSelect(input) {
       const file = input.files[0];
       const nameEl = document.getElementById('fileNameDisplay');
@@ -410,7 +435,6 @@
       const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
       nameEl.innerText = file.name;
 
-      // ဗီဒီယိုဖိုင်နာမည်ကို ဒေါင်းလုဒ်အကွက်ထဲ အလိုအလျောက် ဖြည့်ပေးခြင်း
       const baseName = file.name.replace(/\.[^/.]+$/, "");
       document.getElementById('customFileName').value = `${baseName}_myanmar`;
 
@@ -593,11 +617,10 @@
       return refined;
     }
 
-    // ⏱️ Reading Comfort Buffer: စာမလာခင် (Lead-in) နှင့် စာမပျောက်ခင် (Lead-out) အချိန်အပိုထည့်ပေးပြီး စာတန်းမထပ်အောင် ညှိပေးသည့်စနစ်
     function computeBufferedTimings(segments) {
       const mode = document.getElementById('bufferSelect').value;
-      let leadIn = 0.20;   // စကားမပြောခင် 0.2 စက္ကန့် ကြိုပေါ်မည်
-      let leadOut = 0.45;  // စကားဆုံးပြီး 0.45 စက္ကန့် ဆက်ပြထားမည်
+      let leadIn = 0.20;
+      let leadOut = 0.45;
       let minDuration = 1.50;
 
       if (mode === 'extra') {
@@ -610,27 +633,23 @@
         minDuration = 1.00;
       }
 
-      const MIN_GAP = 0.05; // စာတန်းတစ်ခုနှင့်တစ်ခုကြား အနည်းဆုံး ခြားထားမည့် စက္ကန့်
+      const MIN_GAP = 0.05;
       const result = segments.map(s => ({
         ...s,
-         calcStart: Math.max(0, s.origStart - leadIn),
+        calcStart: Math.max(0, s.origStart - leadIn),
         calcEnd: Math.max(s.origStart + minDuration, s.origEnd + leadOut)
       }));
 
       for (let i = 0; i < result.length; i++) {
-        // ရှေ့စာကြောင်းနှင့် မထပ်စေရန် စစ်ဆေးခြင်း
         if (i > 0 && result[i].calcStart < result[i - 1].calcEnd + MIN_GAP) {
           result[i].calcStart = result[i - 1].calcEnd + MIN_GAP;
         }
-
-        // နောက်စာကြောင်း၏ မူရင်းစကားစပြောချိန်ကို ကျော်မသွားစေရန် ထိန်းညှိခြင်း
         if (i < result.length - 1) {
           const nextNaturalStart = Math.max(result[i].origEnd, result[i + 1].origStart - leadIn);
           if (result[i].calcEnd > nextNaturalStart - MIN_GAP) {
             result[i].calcEnd = Math.max(result[i].calcStart + 0.6, nextNaturalStart - MIN_GAP);
           }
         }
-
         if (result[i].calcEnd <= result[i].calcStart) {
           result[i].calcEnd = result[i].calcStart + 0.8;
         }
@@ -644,7 +663,7 @@
       const uniqueModels = [...new Set(modelsToTry)];
       let lastError = "";
 
-      const genConfig = { temperature: 0.2 };
+      const genConfig = { temperature: 0.25 };
       if (expectJson) genConfig.responseMimeType = "application/json";
 
       for (const model of uniqueModels) {
@@ -671,6 +690,7 @@
       throw new Error(lastError);
     }
 
+    // 🧠 ဗီဒီယိုဇာတ်လမ်း သုံးသပ်ခြင်း + TikTok Viral Titles နှင့် Caption + Hashtags ထုတ်ပေးခြင်း
     async function analyzeVideoContext(segments, apiKey, preferredModel, selectedGenre, userHint) {
       const sampleLines = segments.slice(0, 80).map((s, idx) => `${idx + 1}. ${s.origText}`).join('\n');
 
@@ -682,7 +702,10 @@
         recap: "Movie Recap / Narrator Commentary (ဇာတ်လမ်းအကျဉ်း ပြောပြချက်)."
       };
 
-      const prompt = `Analyze the following subtitle transcript from a video and create a Translation Style & Character Guide for translating it into natural spoken Myanmar (Burmese).
+      const prompt = `Analyze the following subtitle transcript from a video and create:
+1. A Translation Style & Character Guide for natural Burmese translation.
+2. 3 Viral Burmese On-Screen Video Titles (to put on top of the video to hook viewers).
+3. A Ready-to-Use Burmese TikTok Caption + Trending Hashtags (#).
 
 Genre Setting: ${genreMap[selectedGenre] || genreMap.auto}
 User Note: ${userHint || "None"}
@@ -693,7 +716,9 @@ ${sampleLines}
 Return a JSON object with:
 1. "genre_my": Short Burmese description of the video's genre and tone.
 2. "story_context": Brief summary of the scene/story and relationships between speakers.
-3. "character_glossary": Consistent Burmese transliterations for character/clan/place names and titles, plus exact Burmese pronouns to use (e.g. ငါ/မင်း, ကျွန်တော်/အစ်မကြီး, အရှင်သခင်လေး, နယ်စားကြီး, etc.).`;
+3. "character_glossary": Consistent Burmese transliterations for character/clan/place names and titles, plus exact Burmese pronouns to use.
+4. "viral_titles": Array of 3 catchy, curiosity-inducing Burmese titles to display on the video screen.
+5. "tiktok_caption": Engaging Burmese TikTok caption with a hook, call-to-action (Follow/Like), and 10+ relevant trending hashtags (#myanmarsub #chinesedrama #ဇာတ်လမ်းတွဲ #fyp etc.).`;
 
       try {
         const resData = await callGeminiWithFallback(prompt, apiKey, preferredModel, true);
@@ -703,7 +728,13 @@ Return a JSON object with:
         return {
           genre_my: "သဘာဝ မြန်မာစကားပြောဟန်",
           story_context: userHint || "Drama dialogue",
-          character_glossary: "Use consistent, natural Burmese pronouns and names."
+          character_glossary: "Use consistent, natural Burmese pronouns and names.",
+          viral_titles: [
+            "အားလုံး အထင်သေးခဲ့ကြပေမယ့် တကယ့်အရှင်သခင် ဖြစ်နေတဲ့အခါ 🔥",
+            "သစ္စာဖောက်တွေကို ဖော်ထုတ်ဖို့ ဟန်ဆောင်ခဲ့သော သခင်လေး ⚔️",
+            "မထင်မှတ်ထားတဲ့ အလှည့်အပြောင်းများနဲ့ အပိုင်း (၁) 😱"
+          ],
+          tiktok_caption: "ဒီဇာတ်လမ်းလေးရဲ့ အလှည့်အပြောင်းကတော့ လုံးဝ အမိုက်စားပဲနော် 🔥 နောက်အပိုင်းတွေ ဆက်ကြည့်ဖို့ Follow & Heart ပေးသွားကြပါဦး ❤️🎬\n\n#myanmarsub #chinesedrama #တရုတ်ဇာတ်လမ်းတွဲ #သိုင်းကား #နန်းတွင်းကား #ဇာတ်လမ်းတို #မြန်မာစာတန်းထိုး #fyp #foryou #viralmyanmar"
         };
       }
     }
@@ -746,13 +777,12 @@ Return a JSON object with:
       btn.innerHTML = `<span>⏳ AI အလုပ်လုပ်နေပါသည်...</span>`;
       
       document.getElementById('statusBox').classList.add('hidden');
-      document.getElementById('contextSummaryBox').classList.add('hidden');
       document.getElementById('resultArea').classList.add('hidden');
       document.getElementById('progressCard').classList.remove('hidden');
       
       updateStep(0, 'active', 'ဗီဒီယိုထဲမှ အသံခွဲထုတ်ပြီး ဆိုဒ်ချုံ့နေပါသည်...');
       updateStep(1, 'idle', 'Groq Whisper ဖြင့် အသံနှင့်အညီ အချိန်ဖမ်းခြင်း');
-      updateStep(2, 'idle', 'ဇာတ်လမ်းအကြောင်းအရာနှင့် လေသံကို သုံးသပ်ခြင်း');
+      updateStep(2, 'idle', 'ဇာတ်လမ်းသုံးသပ်ခြင်းနှင့် TikTok Caption ထုတ်ခြင်း');
       updateStep(3, 'idle', 'Gemini AI ဖြင့် သဘာဝကျကျ မြန်မာပြန်ဆိုခြင်း');
 
       try {
@@ -818,15 +848,17 @@ Return a JSON object with:
 
         updateStep(1, 'done', `အသံဖမ်းယူမှု ပြီးဆုံးပါပြီ (စာကြောင်းရေ ${finalSegments.length} ကြောင်း)`);
 
-        // Step 2: Analyze Video Context & Character Glossary
-        updateStep(2, 'active', 'ဗီဒီယိုဇာတ်လမ်း၊ ဇာတ်ကောင်နှင့် လေသံကို AI သုံးသပ်နေပါသည်...');
+        // Step 2: Analyze Video Context + Generate TikTok Titles & Caption
+        updateStep(2, 'active', 'ဇာတ်လမ်းသုံးသပ်ပြီး TikTok Title & Caption ထုတ်နေပါသည်...');
         const contextGuide = await analyzeVideoContext(finalSegments, geminiKey, preferredModel, selectedGenre, userHint);
-        updateStep(2, 'done', `ဇာတ်လမ်းသုံးသပ်မှု ပြီးဆုံးပါပြီ (${contextGuide.genre_my || 'သဘာဝစကားပြောဟန်'})`);
+        updateStep(2, 'done', `TikTok Title နှင့် Caption ထုတ်ပြီးပါပြီ (${contextGuide.genre_my || 'သဘာဝစကားပြောဟန်'})`);
 
-        if (contextGuide.genre_my) {
-          const ctxBox = document.getElementById('contextSummaryBox');
-          ctxBox.innerText = `🎬 AI သုံးသပ်ချက်: ${contextGuide.genre_my}`;
-          ctxBox.classList.remove('hidden');
+        // Populate TikTok Titles & Caption Boxes
+        if (Array.isArray(contextGuide.viral_titles)) {
+          document.getElementById('tiktokTitlesBox').value = contextGuide.viral_titles.map((t, idx) => `${idx + 1}. ${t}`).join('\n');
+        }
+        if (contextGuide.tiktok_caption) {
+          document.getElementById('tiktokCaptionBox').value = contextGuide.tiktok_caption;
         }
 
         // Step 3: Context-Aware Natural Myanmar Batch Translation
@@ -912,7 +944,7 @@ ${JSON.stringify(inputPayload)}`;
         // Display Output
         switchTab('my');
         document.getElementById('resultArea').classList.remove('hidden');
-        setAlert("🎉 စာဖတ်ရအဆင်ပြေသော အချိန်ညှိစနစ်နှင့် သဘာဝကျသည့် မြန်မာစာတန်းထိုး ရရှိပါပြီ!", false);
+        setAlert("🎉 မြန်မာစာတန်းထိုး (SRT) နှင့် TikTok Title & Caption + # များ အသင့်ရရှိပါပြီ!", false);
 
       } catch (err) {
         setAlert("Error: " + err.message, true);
@@ -923,7 +955,7 @@ ${JSON.stringify(inputPayload)}`;
       } finally {
         btn.disabled = false;
         btn.classList.remove('opacity-50');
-        btn.innerHTML = `<span>✨ SRT ထုတ်ပြီး သဘာဝကျကျ မြန်မာပြန်မည်</span>`;
+        btn.innerHTML = `<span>✨ SRT + TikTok Caption ထုတ်မည်</span>`;
       }
     }
 
@@ -942,7 +974,6 @@ ${JSON.stringify(inputPayload)}`;
       renderSrtOutput();
     }
 
-    // 📥 စိတ်ကြိုက်ပေးထားသော ဖိုင်နာမည်ဖြင့် SRT ဒေါင်းလုဒ်ဆွဲခြင်း
     function downloadSRT() {
       const text = document.getElementById('srtOutput').value;
       let customName = document.getElementById('customFileName').value.trim();
@@ -950,7 +981,6 @@ ${JSON.stringify(inputPayload)}`;
       if (!customName) {
         customName = activeTab === 'my' ? 'myanmar_subtitles' : 'original_subtitles';
       }
-      // .srt မပါသေးပါက အလိုအလျောက် တပ်ပေးခြင်း
       if (!customName.toLowerCase().endsWith('.srt')) {
         customName += '.srt';
       }
@@ -969,6 +999,13 @@ ${JSON.stringify(inputPayload)}`;
       copyText.select();
       navigator.clipboard.writeText(copyText.value);
       showToast("📋 သန့်စင်ပြီးသား SRT စာသားကို Copy ကူးပြီးပါပြီ!");
+    }
+
+    function copyTextById(elementId, toastMsg) {
+      const el = document.getElementById(elementId);
+      el.select();
+      navigator.clipboard.writeText(el.value);
+      showToast("📋 " + toastMsg);
     }
   </script>
 </body>
