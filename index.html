@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Video to Myanmar SRT</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 pb-16">
+
+  <div class="max-w-md mx-auto">
+    <!-- Header -->
+    <div class="text-center my-5">
+      <h1 class="text-2xl font-bold text-cyan-400">🎬 Video to Myanmar SRT</h1>
+      <p class="text-xs text-slate-400 mt-1">Groq (အချိန်ကိုက်) + Gemini (မြန်မာပြန်)</p>
+    </div>
+
+    <!-- 1. API Keys Settings -->
+    <details class="bg-slate-800 rounded-2xl p-4 border border-slate-700 mb-4 shadow-lg" open>
+      <summary class="text-xs font-semibold text-cyan-300 cursor-pointer select-none">
+        🔑 API Keys ထည့်သွင်းရန် (ဒီနေရာကို နှိပ်ပါ)
+      </summary>
+      <div class="mt-4 space-y-3">
+        <div>
+          <label class="block text-[11px] text-slate-400 mb-1">Groq API Key (Whisper အတွက်)</label>
+          <input type="password" id="groqKey" placeholder="gsk_..." 
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <div>
+          <label class="block text-[11px] text-slate-400 mb-1">Gemini API Key (မြန်မာပြန်ရန်)</label>
+          <input type="password" id="geminiKey" placeholder="AIzaSy..." 
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <button onclick="saveKeys()" class="w-full bg-slate-700 active:bg-slate-600 text-cyan-300 text-xs py-2.5 rounded-xl font-medium transition">
+          Key များကို ဖုန်းထဲတွင် သိမ်းမည်
+        </button>
+        <div id="saveNotice" class="text-[11px] text-green-400 text-center hidden">✓ Key များကို သိမ်းဆည်းပြီးပါပြီ!</div>
+      </div>
+    </details>
+
+    <!-- 2. Video Upload Section -->
+    <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700 mb-4 shadow-lg">
+      <label class="block text-xs font-semibold text-slate-300 mb-2">ဖုန်းထဲမှ Video သို့မဟုတ် Audio ဖိုင်ရွေးပါ</label>
+      <input type="file" id="mediaFile" accept="video/*,audio/*" 
+        class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-cyan-500 file:text-slate-950">
+      <p class="text-[11px] text-amber-400/90 mt-2.5 leading-relaxed">
+        ⚠️ ဖိုင်ဆိုဒ် 25MB ထက် မကျော်ရပါ။ (ဗီဒီယိုရှည်ပါက Video to MP3 ဖြင့် အသံအရင်ပြောင်းပြီး တင်ပါ)
+      </p>
+    </div>
+
+    <!-- Action Button -->
+    <button id="startBtn" onclick="startProcess()" 
+      class="w-full bg-cyan-500 active:bg-cyan-600 text-slate-950 font-bold py-3.5 rounded-2xl shadow-lg transition text-sm">
+      SRT ထုတ်ပြီး မြန်မာပြန်မည်
+    </button>
+
+    <!-- Status Box -->
+    <div id="statusBox" class="mt-3 p-3.5 rounded-xl text-xs leading-relaxed hidden"></div>
+
+    <!-- 3. Result Section -->
+    <div id="resultArea" class="mt-4 hidden space-y-3">
+      <div class="flex gap-2">
+        <button onclick="downloadSRT()" class="flex-1 bg-green-600 active:bg-green-700 text-white text-xs py-3 rounded-xl font-bold shadow transition">
+          📥 SRT ဒေါင်းလုဒ်
+        </button>
+        <button onclick="copyToClipboard()" class="flex-1 bg-slate-700 active:bg-slate-600 text-cyan-300 text-xs py-3 rounded-xl font-bold shadow transition">
+          📋 စာသား Copy ကူးမည်
+        </button>
+      </div>
+      <textarea id="srtOutput" readonly class="w-full h-64 bg-slate-950 border border-slate-700 rounded-2xl p-3.5 text-xs text-slate-300 font-mono focus:outline-none"></textarea>
+    </div>
+  </div>
+
+  <script>
+    // ဖုန်းထဲတွင် မှတ်ထားသော API Key များကို အလိုအလျောက် ဖြည့်ပေးခြင်း
+    window.onload = () => {
+      if(localStorage.getItem('groq_key')) document.getElementById('groqKey').value = localStorage.getItem('groq_key');
+      if(localStorage.getItem('gemini_key')) document.getElementById('geminiKey').value = localStorage.getItem('gemini_key');
+    };
+
+    function saveKeys() {
+      localStorage.setItem('groq_key', document.getElementById('groqKey').value.trim());
+      localStorage.setItem('gemini_key', document.getElementById('geminiKey').value.trim());
+      const notice = document.getElementById('saveNotice');
+      notice.classList.remove('hidden');
+      setTimeout(() => notice.classList.add('hidden'), 2500);
+    }
+
+    function setStatus(msg, isError = false) {
+      const box = document.getElementById('statusBox');
+      box.classList.remove('hidden', 'bg-blue-950', 'text-blue-300', 'bg-red-950', 'text-red-300');
+      box.classList.add(isError ? 'bg-red-950' : 'bg-blue-950', isError ? 'text-red-300' : 'text-blue-300');
+      box.innerText = msg;
+    }
+
+    async function startProcess() {
+      const groqKey = document.getElementById('groqKey').value.trim();
+      const geminiKey = document.getElementById('geminiKey').value.trim();
+      const file = document.getElementById('mediaFile').files[0];
+      const btn = document.getElementById('startBtn');
+
+      if (!groqKey || !geminiKey) return alert("Groq Key နှင့် Gemini Key နှစ်ခုလုံး ထည့်ပေးပါခင်ဗျာ။");
+      if (!file) return alert("ဖိုင်အရင် ရွေးပေးပါခင်ဗျာ။");
+      if (file.size > 25 * 1024 * 1024) return alert("ဖိုင်ဆိုဒ် 25MB ထက် ကြီးနေပါသည်။ MP3 အဖြစ်ပြောင်းပြီးမှ ထပ်စမ်းပါ။");
+
+      btn.disabled = true;
+      btn.innerText = "လုပ်ဆောင်နေပါသည်...";
+
+      try {
+        // အဆင့် ၁ - Groq Whisper ဖြင့် Timestamp အတိအကျ ထုတ်ယူခြင်း
+        setStatus("၁/၂။ Groq Whisper ဖြင့် အသံနားထောင်ပြီး အချိန်အတိအကျ စာတန်းထိုး ထုတ်နေပါသည်...");
+        
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("model", "whisper-large-v3-turbo");
+        formData.append("response_format", "srt");
+
+        const groqRes = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${groqKey}` },
+          body: formData
+        });
+
+        if (!groqRes.ok) {
+          const errData = await groqRes.json().catch(() => ({}));
+          throw new Error(errData.error?.message || "Groq API အလုပ်မလုပ်ပါ။ Key စစ်ဆေးပါ။");
+        }
+        const originalSrt = await groqRes.text();
+
+        // အဆင့် ၂ - Gemini ဖြင့် မြန်မာဘာသာပြန်ဆိုခြင်း
+        setStatus("၂/၂။ Gemini API ဖြင့် Timestamp မလွဲအောင် မြန်မာဘာသာပြန်နေပါသည်...");
+        
+        const prompt = `Translate this SRT subtitle file into natural, spoken Myanmar (Burmese) language.
+Rules:
+1. DO NOT change any numbers, arrows (-->), or timestamp timings. Keep them 100% intact.
+2. Only translate the spoken text sentences into fluent Burmese.
+3. Return ONLY valid raw SRT text without any markdown wrappers (do NOT add \`\`\`srt).
+
+SRT:\n${originalSrt}`;
+
+        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+
+        if (!geminiRes.ok) {
+          const errData = await geminiRes.json().catch(() => ({}));
+          throw new Error(errData.error?.message || "Gemini API အလုပ်မလုပ်ပါ။ Key စစ်ဆေးပါ။");
+        }
+
+        const geminiData = await geminiRes.json();
+        let translated = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        translated = translated.replace(/```srt/gi, '').replace(/```/g, '').trim();
+
+        document.getElementById('srtOutput').value = translated;
+        document.getElementById('resultArea').classList.remove('hidden');
+        setStatus("✓ မြန်မာစာတန်းထိုး အောင်မြင်စွာ ရရှိပါပြီ!");
+
+      } catch (err) {
+        setStatus("Error: " + err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "SRT ထုတ်ပြီး မြန်မာပြန်မည်";
+      }
+    }
+
+    function downloadSRT() {
+      const text = document.getElementById('srtOutput').value;
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "myanmar_subtitles.srt";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function copyToClipboard() {
+      const copyText = document.getElementById("srtOutput");
+      copyText.select();
+      navigator.clipboard.writeText(copyText.value);
+      alert("SRT စာသားအားလုံးကို Copy ကူးယူပြီးပါပြီ!");
+    }
+  </script>
+</body>
+</html>
