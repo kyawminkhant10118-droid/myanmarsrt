@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AI Myanmar Subtitle Studio v6.5</title>
+  <title>AI Myanmar Subtitle Studio v7.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -36,12 +36,12 @@
     <div class="text-center pt-3 pb-5">
       <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold mb-3">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        v6.5 Anti-Disconnect & Auto-Retry
+        v7.0 Reading Comfort & Custom Name
       </div>
       <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">
         <strong>Video to Myanmar SRT</strong>
       </h1>
-      <p class="text-xs font-bold text-slate-400 mt-1">ဗီဒီယိုဇာတ်လမ်းအလိုက် သဘာဝကျကျ မြန်မာပြန်စနစ်</p>
+      <p class="text-xs font-bold text-slate-400 mt-1">စာဖတ်ရအဆင်ပြေပြီး သဘာဝကျသော မြန်မာစာတန်းထိုးစနစ်</p>
     </div>
 
     <!-- API & Model Settings Card -->
@@ -82,7 +82,7 @@
     <!-- Smart Context & Features Card -->
     <div class="glass rounded-2xl p-4 mb-4 shadow-xl space-y-3.5">
       <div class="text-xs font-bold text-cyan-300 flex items-center gap-1.5 border-b border-slate-800 pb-2">
-        <span>🎭</span> ဗီဒီယို အမျိုးအစားနှင့် ဘာသာပြန်ဟန်
+        <span>🎭</span> ဗီဒီယို အမျိုးအစားနှင့် စာဖတ်ချိန် ချိန်ညှိမှု
       </div>
 
       <!-- Video Genre Selector -->
@@ -102,6 +102,17 @@
         <label class="block text-[11px] font-semibold text-slate-300 mb-1">📝 ဇာတ်လမ်းအညွှန်း (မထည့်လည်း ရပါသည်)</label>
         <input type="text" id="customContext" placeholder="ဥပမာ - မင်းသားက အရူးဟန်ဆောင်ပြီး ပြန်လာတဲ့ နန်းတွင်းကား..." 
           class="w-full bg-slate-950/70 border border-slate-700/70 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-400">
+      </div>
+
+      <!-- NEW: Reading Comfort Buffer Selector -->
+      <div class="pt-2 border-t border-slate-800/60">
+        <label class="block text-xs font-bold text-slate-100 mb-1">⏱️ စာမလာခင်နှင့် မပျောက်ခင် အချိန်အပိုထားရှိမှု (စာဖတ်ချိန်)</label>
+        <select id="bufferSelect" onchange="onBufferChange()" class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-3 py-2.5 text-xs text-emerald-300 font-semibold focus:outline-none focus:border-cyan-400">
+          <option value="comfort">👁️ စာဖတ်ရ အကောင်းဆုံး (မလာခင် 0.2s ကြိုပေါ် / မပျောက်ခင် 0.45s ပိုထားမည်)</option>
+          <option value="extra">🐢 စာဖတ်ချိန် ပိုကြာကြာထားမည် (မလာခင် 0.3s ကြိုပေါ် / မပျောက်ခင် 0.7s ပိုထားမည်)</option>
+          <option value="tight">⚡ အသံနှင့် ကွက်တိနီးပါး (မလာခင် 0.05s / မပျောက်ခင် 0.15s)</option>
+        </select>
+        <p class="text-[10px] text-slate-400 mt-1">💡 စာတန်းထိုးများ တစ်ခုနှင့်တစ်ခု လုံးဝမထပ်သွားအောင် အလိုအလျောက် ညှိပေးပါသည်</p>
       </div>
 
       <!-- Feature 1: Voice Sync -->
@@ -210,6 +221,18 @@
         <p class="text-[10px] text-slate-500">💡 စာသားများကို တိုက်ရိုက် ပြင်ဆင်နိုင်သည်</p>
       </div>
 
+      <!-- NEW: Custom Filename Input Before Download -->
+      <div class="pt-2 border-t border-slate-800/80">
+        <label class="block text-[11px] font-bold text-cyan-300 mb-1.5">
+          📝 ဒေါင်းလုဒ်ဆွဲမည့် SRT ဖိုင်နာမည် စိတ်ကြိုက်ပေးရန်
+        </label>
+        <div class="flex items-center bg-slate-950/90 border border-slate-700 rounded-xl overflow-hidden focus-within:border-cyan-400 transition">
+          <input type="text" id="customFileName" placeholder="myanmar_subtitles" 
+            class="w-full bg-transparent px-3.5 py-2.5 text-xs font-semibold text-white focus:outline-none">
+          <span class="bg-slate-800 text-cyan-400 text-xs font-mono font-bold px-3 py-2.5 border-l border-slate-700 select-none">.srt</span>
+        </div>
+      </div>
+
       <!-- Action Buttons -->
       <div class="grid grid-cols-2 gap-2.5 pt-1">
         <button onclick="downloadSRT()" class="bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 text-xs py-3 rounded-xl font-extrabold shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-1.5">
@@ -240,6 +263,7 @@
       const voiceSync = localStorage.getItem('voice_sync') !== 'false';
       const nameStyle = localStorage.getItem('name_style') || "clean";
       const genre = localStorage.getItem('video_genre') || "auto";
+      const bufferMode = localStorage.getItem('buffer_mode') || "comfort";
 
       document.getElementById('groqKey').value = gKey;
       document.getElementById('geminiKey').value = gemKey;
@@ -247,6 +271,7 @@
       document.getElementById('voiceSyncToggle').checked = voiceSync;
       document.getElementById('nameStyleSelect').value = nameStyle;
       document.getElementById('genreSelect').value = genre;
+      document.getElementById('bufferSelect').value = bufferMode;
 
       updateKeyBadge(gKey, gemKey);
       if (!gKey || !gemKey) {
@@ -258,6 +283,7 @@
       localStorage.setItem('voice_sync', document.getElementById('voiceSyncToggle').checked);
       localStorage.setItem('name_style', document.getElementById('nameStyleSelect').value);
       localStorage.setItem('video_genre', document.getElementById('genreSelect').value);
+      localStorage.setItem('buffer_mode', document.getElementById('bufferSelect').value);
     }
 
     function onNameStyleChange() {
@@ -268,7 +294,15 @@
       }
     }
 
-    // 🔄 Auto-Retry Fetch: VPN သို့မဟုတ် လိုင်းခေတ္တပြတ်သွားပါက အလိုအလျောက် ၃ ကြိမ် ပြန်ချိတ်ဆက်ပေးသည့်စနစ်
+    function onBufferChange() {
+      saveFeaturePrefs();
+      if (finalSegments.length > 0) {
+        renderSrtOutput();
+        showToast("⏱️ စာဖတ်ချိန် အပိုဆောင်းစနစ်ကို ချိန်ညှိပြီးပါပြီ!");
+      }
+    }
+
+    // 🔄 Auto-Retry Fetch
     async function fetchWithRetry(url, options, maxRetries = 3, onRetryMsg = null) {
       let lastErr;
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -283,7 +317,7 @@
           }
         }
       }
-      throw new Error("အင်တာနက် သို့မဟုတ် VPN လိုင်းပြတ်တောက်နေပါသည် (Failed to fetch)။ VPN ကို ခဏပိတ်ပြီး သို့မဟုတ် လိုင်းပြန်ချိတ်ပြီး ထပ်စမ်းကြည့်ပါ။");
+      throw new Error("အင်တာနက် သို့မဟုတ် VPN လိုင်းပြတ်တောက်နေပါသည် (Failed to fetch)။ VPN လိုင်းပြန်ချိတ်ပြီး ထပ်စမ်းကြည့်ပါ။");
     }
 
     // 🛡️ Pure Myanmar Sanitizer
@@ -366,7 +400,7 @@
       showToast("✓ API Keys နှင့် Model ကို သိမ်းဆည်းပြီးပါပြီ!");
     }
 
-    // 📁 ဖိုင်ရွေးလိုက်သည်နှင့် Memory ထဲ တစ်ခါတည်း သိမ်းဆည်းထားပေးခြင်း (Android ဖိုင်လင့်ခ်ပြတ်ခြင်းမှ ကာကွယ်ရန်)
+    // 📁 ဖိုင်ရွေးလိုက်သည်နှင့် Memory ထဲ သိမ်းဆည်းပြီး ဖိုင်နာမည်ကိုပါ အလိုအလျောက် ဖြည့်ပေးခြင်း
     async function handleFileSelect(input) {
       const file = input.files[0];
       const nameEl = document.getElementById('fileNameDisplay');
@@ -375,6 +409,11 @@
       if (!file) return;
       const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
       nameEl.innerText = file.name;
+
+      // ဗီဒီယိုဖိုင်နာမည်ကို ဒေါင်းလုဒ်အကွက်ထဲ အလိုအလျောက် ဖြည့်ပေးခြင်း
+      const baseName = file.name.replace(/\.[^/.]+$/, "");
+      document.getElementById('customFileName').value = `${baseName}_myanmar`;
+
       sizeEl.innerText = `⏳ ဖိုင်ကို Memory ထဲ သိမ်းဆည်းနေပါသည် (${sizeMB} MB)...`;
       sizeEl.className = "text-[11px] text-amber-300 font-medium mt-1 text-center";
 
@@ -470,7 +509,6 @@
       return new Blob([out], { type: 'audio/wav' });
     }
 
-    // ⚡ ဗီဒီယိုဖိုင်အားလုံးကို ပေါ့ပါးသော 12kHz အသံဖိုင်အဖြစ် အလိုအလျောက် ချုံ့ပေးခြင်း (VPN ဖြင့် ပို့ရာတွင် လိုင်းမပြတ်စေရန်)
     async function extractAndChunkAudio(file) {
       const rawBuffer = cachedArrayBuffer ? cachedArrayBuffer.slice(0) : await file.arrayBuffer();
 
@@ -478,8 +516,8 @@
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const decodedBuffer = await audioCtx.decodeAudioData(rawBuffer);
 
-        const TARGET_RATE = 12000; // 12kHz Mono သည် အသံကြည်လင်ပြီး ဖိုင်ဆိုဒ် အလွန်သေးငယ်သည် (~1.3MB per minute)
-        const CHUNK_SECONDS = 300; // ၅ မိနစ်လျှင် တစ်ပိုင်း (~7MB per chunk) ခွဲပို့သဖြင့် လိုင်းနှေးသော်လည်း မပြတ်နိုင်ပါ
+        const TARGET_RATE = 12000;
+        const CHUNK_SECONDS = 300;
         const totalDuration = decodedBuffer.duration;
         const totalChunks = Math.ceil(totalDuration / CHUNK_SECONDS);
         const chunks = [];
@@ -509,7 +547,6 @@
         if (audioCtx.close) await audioCtx.close();
         return chunks;
       } catch (decodeErr) {
-        // အကယ်၍ Browser က အသံချုံ့မရသော ဖိုင်အမျိုးအစားဖြစ်ပါက Memory Blob ဖြင့် တိုက်ရိုက်ပို့မည်
         const fallbackBlob = new Blob([rawBuffer], { type: cachedFileType || file.type || 'video/mp4' });
         return [{ blob: fallbackBlob, fileName: cachedFileName || file.name, offsetSeconds: 0 }];
       }
@@ -544,6 +581,8 @@
         }
 
         refined.push({
+          origStart: sStart,
+          origEnd: sEnd,
           start: sStart,
           end: sEnd,
           origText: text,
@@ -551,13 +590,53 @@
         });
       });
 
-      for (let i = 0; i < refined.length - 1; i++) {
-        if (refined[i].end > refined[i + 1].start) {
-          refined[i].end = Math.max(refined[i].start + 0.4, refined[i + 1].start - 0.04);
+      return refined;
+    }
+
+    // ⏱️ Reading Comfort Buffer: စာမလာခင် (Lead-in) နှင့် စာမပျောက်ခင် (Lead-out) အချိန်အပိုထည့်ပေးပြီး စာတန်းမထပ်အောင် ညှိပေးသည့်စနစ်
+    function computeBufferedTimings(segments) {
+      const mode = document.getElementById('bufferSelect').value;
+      let leadIn = 0.20;   // စကားမပြောခင် 0.2 စက္ကန့် ကြိုပေါ်မည်
+      let leadOut = 0.45;  // စကားဆုံးပြီး 0.45 စက္ကန့် ဆက်ပြထားမည်
+      let minDuration = 1.50;
+
+      if (mode === 'extra') {
+        leadIn = 0.30;
+        leadOut = 0.70;
+        minDuration = 1.85;
+      } else if (mode === 'tight') {
+        leadIn = 0.05;
+        leadOut = 0.15;
+        minDuration = 1.00;
+      }
+
+      const MIN_GAP = 0.05; // စာတန်းတစ်ခုနှင့်တစ်ခုကြား အနည်းဆုံး ခြားထားမည့် စက္ကန့်
+      const result = segments.map(s => ({
+        ...s,
+         calcStart: Math.max(0, s.origStart - leadIn),
+        calcEnd: Math.max(s.origStart + minDuration, s.origEnd + leadOut)
+      }));
+
+      for (let i = 0; i < result.length; i++) {
+        // ရှေ့စာကြောင်းနှင့် မထပ်စေရန် စစ်ဆေးခြင်း
+        if (i > 0 && result[i].calcStart < result[i - 1].calcEnd + MIN_GAP) {
+          result[i].calcStart = result[i - 1].calcEnd + MIN_GAP;
+        }
+
+        // နောက်စာကြောင်း၏ မူရင်းစကားစပြောချိန်ကို ကျော်မသွားစေရန် ထိန်းညှိခြင်း
+        if (i < result.length - 1) {
+          const nextNaturalStart = Math.max(result[i].origEnd, result[i + 1].origStart - leadIn);
+          if (result[i].calcEnd > nextNaturalStart - MIN_GAP) {
+            result[i].calcEnd = Math.max(result[i].calcStart + 0.6, nextNaturalStart - MIN_GAP);
+          }
+        }
+
+        if (result[i].calcEnd <= result[i].calcStart) {
+          result[i].calcEnd = result[i].calcStart + 0.8;
         }
       }
 
-      return refined;
+      return result;
     }
 
     async function callGeminiWithFallback(prompt, apiKey, preferredModel, expectJson = true) {
@@ -632,10 +711,11 @@ Return a JSON object with:
     function renderSrtOutput() {
       const output = document.getElementById('srtOutput');
       const isMy = (activeTab === 'my');
+      const bufferedSegments = computeBufferedTimings(finalSegments);
 
-      const blocks = finalSegments.map((seg, idx) => {
-        const startStr = formatSrtTime(seg.start);
-        const endStr = formatSrtTime(seg.end);
+      const blocks = bufferedSegments.map((seg, idx) => {
+        const startStr = formatSrtTime(seg.calcStart);
+        const endStr = formatSrtTime(seg.calcEnd);
         const rawLine = isMy ? seg.myTextRaw : seg.origText;
         const cleanLine = sanitizeSubtitleLine(rawLine, isMy);
         return `${idx + 1}\n${startStr} --> ${endStr}\n${cleanLine}`;
@@ -676,12 +756,12 @@ Return a JSON object with:
       updateStep(3, 'idle', 'Gemini AI ဖြင့် သဘာဝကျကျ မြန်မာပြန်ဆိုခြင်း');
 
       try {
-        // Step 0: Extract & Compress Audio into lightweight WAV chunks
+        // Step 0: Extract & Compress Audio
         const audioChunks = await extractAndChunkAudio(file);
         const firstChunkMB = (audioChunks[0].blob.size / (1024 * 1024)).toFixed(2);
         updateStep(0, 'done', `အသံချုံ့ပြီးပါပြီ (${firstChunkMB} MB - စုစုပေါင်း ${audioChunks.length} ပိုင်း)`);
 
-        // Step 1: Transcribe All Chunks with Groq Whisper (with Auto-Retry)
+        // Step 1: Transcribe All Chunks with Groq Whisper
         updateStep(1, 'active');
         finalSegments = [];
 
@@ -768,11 +848,11 @@ Return a JSON object with:
           const inputPayload = batchSlice.map((seg, i) => ({
             id: i,
             text: seg.origText,
-            duration_sec: Number((seg.end - seg.start).toFixed(1))
+            duration_sec: Number((seg.origEnd - seg.origStart).toFixed(1))
           }));
 
           const syncInstruction = enableVoiceSync
-            ? "Match each Burmese line's length and speaking rhythm to `duration_sec` so it fits the actor's voice timing."
+            ? "Match each Burmese line's length and speaking rhythm to `duration_sec` so it is easy to read comfortably."
             : "Translate into natural, expressive spoken Burmese.";
 
           const nameInstruction = (nameStyle === 'clean')
@@ -832,7 +912,7 @@ ${JSON.stringify(inputPayload)}`;
         // Display Output
         switchTab('my');
         document.getElementById('resultArea').classList.remove('hidden');
-        setAlert("🎉 ဗီဒီယိုဇာတ်လမ်းအလိုက် သဘာဝကျကျ ပြန်ဆိုထားသော မြန်မာစာတန်းထိုး ရရှိပါပြီ!", false);
+        setAlert("🎉 စာဖတ်ရအဆင်ပြေသော အချိန်ညှိစနစ်နှင့် သဘာဝကျသည့် မြန်မာစာတန်းထိုး ရရှိပါပြီ!", false);
 
       } catch (err) {
         setAlert("Error: " + err.message, true);
@@ -862,16 +942,26 @@ ${JSON.stringify(inputPayload)}`;
       renderSrtOutput();
     }
 
+    // 📥 စိတ်ကြိုက်ပေးထားသော ဖိုင်နာမည်ဖြင့် SRT ဒေါင်းလုဒ်ဆွဲခြင်း
     function downloadSRT() {
       const text = document.getElementById('srtOutput').value;
-      const suffix = activeTab === 'my' ? 'myanmar' : 'original';
+      let customName = document.getElementById('customFileName').value.trim();
+
+      if (!customName) {
+        customName = activeTab === 'my' ? 'myanmar_subtitles' : 'original_subtitles';
+      }
+      // .srt မပါသေးပါက အလိုအလျောက် တပ်ပေးခြင်း
+      if (!customName.toLowerCase().endsWith('.srt')) {
+        customName += '.srt';
+      }
+
       const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `subtitles_${suffix}.srt`;
+      a.download = customName;
       a.click();
       URL.revokeObjectURL(a.href);
-      showToast("📥 SRT ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ!");
+      showToast(`📥 "${customName}" ကို ဒေါင်းလုဒ်ဆွဲနေပါပြီ!`);
     }
 
     function copyToClipboard() {
