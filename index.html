@@ -3,98 +3,243 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Video to Myanmar SRT (Pro)</title>
-  <!-- Tailwind CSS CDN -->
+  <title>AI Myanmar Subtitle Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', 'Padauk', sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0%, #020617 100%);
+    }
+    .glass {
+      background: rgba(30, 41, 59, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glow-btn {
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.35);
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .animate-ring { animation: pulse-ring 2s infinite; }
+  </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-4 pb-16">
+<body class="text-slate-100 min-h-screen p-4 pb-20 selection:bg-cyan-500 selection:text-black">
 
   <div class="max-w-md mx-auto">
-    <!-- Header -->
-    <div class="text-center my-5">
-      <h1 class="text-2xl font-bold text-cyan-400">🎬 Video to Myanmar SRT</h1>
-      <p class="text-xs text-amber-400 mt-1">✨ Pro Version (JSON to SRT Converter ပါဝင်သည်)</p>
+    
+    <!-- Top App Header -->
+    <div class="text-center pt-3 pb-6">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-[11px] font-medium mb-3">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        AI Subtitle Studio v3.0
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">
+        Video to Myanmar SRT
+      </h1>
+      <p class="text-xs text-slate-400 mt-1">Groq Whisper (အချိန်ကိုက်) + Gemini 2.5 (မြန်မာပြန်)</p>
     </div>
 
-    <!-- 1. API Keys Settings -->
-    <details class="bg-slate-800 rounded-2xl p-4 border border-slate-700 mb-4 shadow-lg">
-      <summary class="text-xs font-semibold text-cyan-300 cursor-pointer select-none">
-        🔑 API Keys ထည့်သွင်းရန် 
+    <!-- API & Model Settings Card -->
+    <details id="settingsPanel" class="glass rounded-2xl mb-4 transition-all duration-300 shadow-xl">
+      <summary class="p-4 text-xs font-semibold text-slate-200 cursor-pointer select-none flex items-center justify-between">
+        <span class="flex items-center gap-2">
+          <span class="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-400">🔑</span>
+          API Keys နှင့် AI Model ပြင်ဆင်ရန်
+        </span>
+        <span id="keyBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">စစ်ဆေးနေသည်...</span>
       </summary>
-      <div class="mt-4 space-y-3">
+      
+      <div class="px-4 pb-4 pt-1 space-y-3 border-t border-slate-800/80">
         <div>
-          <label class="block text-[11px] text-slate-400 mb-1">Groq API Key</label>
+          <label class="block text-[11px] text-slate-400 mb-1">Groq API Key (အသံဖမ်းရန်)</label>
           <input type="password" id="groqKey" placeholder="gsk_..." 
-            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+            class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400 transition">
         </div>
         <div>
-          <label class="block text-[11px] text-slate-400 mb-1">Gemini API Key</label>
+          <label class="block text-[11px] text-slate-400 mb-1">Gemini API Key (မြန်မာပြန်ရန်)</label>
           <input type="password" id="geminiKey" placeholder="AIzaSy..." 
-            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+            class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400 transition">
         </div>
-        <button onclick="saveKeys()" class="w-full bg-slate-700 active:bg-slate-600 text-cyan-300 text-xs py-2.5 rounded-xl font-medium transition">
-          Key များကို ဖုန်းထဲတွင် သိမ်းမည်
+        <div>
+          <label class="block text-[11px] text-slate-400 mb-1">Gemini AI Model ရွေးချယ်ရန်</label>
+          <select id="geminiModel" class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-cyan-300 focus:outline-none focus:border-cyan-400">
+            <option value="gemini-2.5-flash">⚡ Gemini 2.5 Flash (အမြန်ဆုံးနှင့် အကောင်းဆုံး)</option>
+            <option value="gemini-2.0-flash">🚀 Gemini 2.0 Flash (တည်ငြိမ်သော မော်ဒယ်)</option>
+            <option value="gemini-2.5-pro">🧠 Gemini 2.5 Pro (အသေးစိတ်ဆုံး)</option>
+          </select>
+        </div>
+        <button onclick="saveKeys()" class="w-full bg-gradient-to-r from-slate-800 to-slate-700 hover:from-slate-700 hover:to-slate-600 text-cyan-300 text-xs py-2.5 rounded-xl font-semibold border border-slate-600/50 transition">
+          💾 Key များကို သိမ်းဆည်းမည်
         </button>
-        <div id="saveNotice" class="text-[11px] text-green-400 text-center hidden">✓ Key များကို သိမ်းဆည်းပြီးပါပြီ!</div>
       </div>
     </details>
 
-    <!-- 2. Video Upload Section -->
-    <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700 mb-4 shadow-lg">
-      <label class="block text-xs font-semibold text-slate-300 mb-2">ဖုန်းထဲမှ Video သို့မဟုတ် Audio ဖိုင်ရွေးပါ</label>
-      <input type="file" id="mediaFile" accept="video/*,audio/*" 
-        class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-cyan-500 file:text-slate-950">
-      <p class="text-[11px] text-amber-400/90 mt-2.5 leading-relaxed">
-        ⚠️ ဖိုင်ဆိုဒ် 25MB ထက် မကျော်ရပါ။ (ဗီဒီယိုရှည်ပါက Video to MP3 ဖြင့် အသံအရင်ပြောင်းပြီး တင်ပါ)
-      </p>
+    <!-- File Upload Card -->
+    <div class="glass rounded-2xl p-4 mb-4 shadow-xl">
+      <label class="block text-xs font-semibold text-slate-300 mb-2.5 flex items-center gap-1.5">
+        <span>📁</span> Video သို့မဟုတ် Audio ဖိုင်ရွေးချယ်ပါ
+      </label>
+      
+      <label for="mediaFile" class="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-cyan-400/70 rounded-xl p-5 cursor-pointer bg-slate-950/40 transition group">
+        <div class="w-11 h-11 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition">
+          🎬
+        </div>
+        <span id="fileNameDisplay" class="text-xs font-medium text-cyan-300 text-center break-all px-2">
+          ဖုန်းထဲမှ ဖိုင်ရွေးရန် ဒီနေရာကို နှိပ်ပါ
+        </span>
+        <span id="fileSizeDisplay" class="text-[11px] text-slate-500 mt-1">
+          MP4, MP3, M4A, WAV (အများဆုံး 25 MB)
+        </span>
+        <input type="file" id="mediaFile" accept="video/*,audio/*" class="hidden" onchange="handleFileSelect(this)">
+      </label>
     </div>
 
-    <!-- Action Button -->
+    <!-- Main Action Button -->
     <button id="startBtn" onclick="startProcess()" 
-      class="w-full bg-cyan-500 active:bg-cyan-600 text-slate-950 font-bold py-3.5 rounded-2xl shadow-lg transition text-sm">
-      🚀 SRT ထုတ်ပြီး မြန်မာပြန်မည်
+      class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 active:scale-[0.99] text-slate-950 font-bold py-4 rounded-2xl glow-btn transition text-sm flex items-center justify-center gap-2">
+      <span>✨ SRT ထုတ်ပြီး မြန်မာပြန်မည်</span>
     </button>
 
-    <!-- Status Box -->
-    <div id="statusBox" class="mt-3 p-3.5 rounded-xl text-xs leading-relaxed hidden"></div>
+    <!-- Visual Stepper Progress -->
+    <div id="progressCard" class="glass rounded-2xl p-4 mt-4 hidden shadow-xl space-y-3">
+      <div class="flex items-center justify-between text-xs">
+        <span id="step1Text" class="text-slate-400 flex items-center gap-2">
+          <span id="step1Icon" class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">1</span>
+          Groq Whisper ဖြင့် အချိန်ကိုက် အသံဖမ်းခြင်း
+        </span>
+      </div>
+      <div class="flex items-center justify-between text-xs">
+        <span id="step2Text" class="text-slate-400 flex items-center gap-2">
+          <span id="step2Icon" class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">2</span>
+          Gemini AI ဖြင့် မြန်မာဘာသာပြန်ဆိုခြင်း
+        </span>
+      </div>
+      <div class="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden">
+        <div id="progressBar" class="bg-gradient-to-r from-cyan-400 to-blue-500 h-full w-0 transition-all duration-500"></div>
+      </div>
+    </div>
 
-    <!-- 3. Result Section -->
-    <div id="resultArea" class="mt-4 hidden space-y-3">
-      <div class="flex gap-2">
-        <button onclick="downloadSRT()" class="flex-1 bg-green-600 active:bg-green-700 text-white text-xs py-3 rounded-xl font-bold shadow transition">
-          📥 SRT ဒေါင်းလုဒ်
+    <!-- Error / Alert Box -->
+    <div id="statusBox" class="mt-4 p-3.5 rounded-2xl text-xs leading-relaxed hidden border"></div>
+
+    <!-- Output / Result Card -->
+    <div id="resultArea" class="glass rounded-2xl p-4 mt-4 hidden shadow-xl space-y-3">
+      <!-- Tabs -->
+      <div class="flex bg-slate-950/80 p-1 rounded-xl border border-slate-800">
+        <button id="tabMyBtn" onclick="switchTab('my')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-cyan-500 text-slate-950 transition">
+          🇲🇲 မြန်မာ SRT
         </button>
-        <button onclick="copyToClipboard()" class="flex-1 bg-slate-700 active:bg-slate-600 text-cyan-300 text-xs py-3 rounded-xl font-bold shadow transition">
-          📋 စာသား Copy ကူးမည်
+        <button id="tabOrigBtn" onclick="switchTab('orig')" class="flex-1 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition">
+          🌐 မူရင်း SRT
         </button>
       </div>
-      <textarea id="srtOutput" readonly class="w-full h-64 bg-slate-950 border border-slate-700 rounded-2xl p-3.5 text-xs text-slate-300 font-mono focus:outline-none"></textarea>
+
+      <!-- Editable Textarea -->
+      <textarea id="srtOutput" class="w-full h-64 bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 text-xs text-slate-200 font-mono leading-relaxed focus:outline-none focus:border-cyan-500/50"></textarea>
+      <p class="text-[10px] text-slate-500 text-right">💡 စာသားများကို လိုအပ်သလို တိုက်ရိုက် ပြင်ဆင်ရေးသားနိုင်ပါသည်</p>
+
+      <!-- Action Buttons -->
+      <div class="grid grid-cols-2 gap-2.5 pt-1">
+        <button onclick="downloadSRT()" class="bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 text-xs py-3 rounded-xl font-bold shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-1.5">
+          📥 SRT ဖိုင် ဒေါင်းမည်
+        </button>
+        <button onclick="copyToClipboard()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-cyan-300 border border-slate-700 text-xs py-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5">
+          📋 Copy ကူးမည်
+        </button>
+      </div>
     </div>
+
   </div>
 
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-800 border border-cyan-500/40 text-cyan-300 px-4 py-2.5 rounded-full text-xs font-medium shadow-2xl hidden z-50"></div>
+
   <script>
-    // ဖုန်းထဲတွင် မှတ်ထားသော API Key များကို အလိုအလျောက် ဖြည့်ပေးခြင်း
+    let storedMyanmarSrt = "";
+    let storedOriginalSrt = "";
+    let activeTab = "my";
+
     window.onload = () => {
-      if(localStorage.getItem('groq_key')) document.getElementById('groqKey').value = localStorage.getItem('groq_key');
-      if(localStorage.getItem('gemini_key')) document.getElementById('geminiKey').value = localStorage.getItem('gemini_key');
+      const gKey = localStorage.getItem('groq_key') || "";
+      const gemKey = localStorage.getItem('gemini_key') || "";
+      const savedModel = localStorage.getItem('gemini_model') || "gemini-2.5-flash";
+
+      document.getElementById('groqKey').value = gKey;
+      document.getElementById('geminiKey').value = gemKey;
+      document.getElementById('geminiModel').value = savedModel;
+
+      updateKeyBadge(gKey, gemKey);
+      if (!gKey || !gemKey) {
+        document.getElementById('settingsPanel').open = true;
+      }
     };
 
-    function saveKeys() {
-      localStorage.setItem('groq_key', document.getElementById('groqKey').value.trim());
-      localStorage.setItem('gemini_key', document.getElementById('geminiKey').value.trim());
-      const notice = document.getElementById('saveNotice');
-      notice.classList.remove('hidden');
-      setTimeout(() => notice.classList.add('hidden'), 2500);
+    function updateKeyBadge(gKey, gemKey) {
+      const badge = document.getElementById('keyBadge');
+      if (gKey && gemKey) {
+        badge.innerText = "✓ အသင့်ဖြစ်ပါပြီ";
+        badge.className = "text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30";
+      } else {
+        badge.innerText = "Key ထည့်ရန်လိုသည်";
+        badge.className = "text-[10px] px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30";
+      }
     }
 
-    function setStatus(msg, isError = false) {
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 2500);
+    }
+
+    function saveKeys() {
+      const gKey = document.getElementById('groqKey').value.trim();
+      const gemKey = document.getElementById('geminiKey').value.trim();
+      const model = document.getElementById('geminiModel').value;
+
+      localStorage.setItem('groq_key', gKey);
+      localStorage.setItem('gemini_key', gemKey);
+      localStorage.setItem('gemini_model', model);
+
+      updateKeyBadge(gKey, gemKey);
+      document.getElementById('settingsPanel').open = false;
+      showToast("✓ API Keys နှင့် Model ကို သိမ်းဆည်းပြီးပါပြီ!");
+    }
+
+    function handleFileSelect(input) {
+      const file = input.files[0];
+      const nameEl = document.getElementById('fileNameDisplay');
+      const sizeEl = document.getElementById('fileSizeDisplay');
+
+      if (!file) return;
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      nameEl.innerText = file.name;
+
+      if (sizeMB > 25) {
+        sizeEl.innerText = `⚠️ ဖိုင်ဆိုဒ်: ${sizeMB} MB (25MB ထက်ကျော်နေပါသည်၊ MP3 ပြောင်းတင်ပါ)`;
+        sizeEl.className = "text-[11px] text-rose-400 font-medium mt-1";
+      } else {
+        sizeEl.innerText = `✓ ဖိုင်ဆိုဒ်: ${sizeMB} MB (အဆင်ပြေပါသည်)`;
+        sizeEl.className = "text-[11px] text-emerald-400 font-medium mt-1";
+      }
+    }
+
+    function setAlert(msg, isError = false) {
       const box = document.getElementById('statusBox');
-      box.classList.remove('hidden', 'bg-blue-950', 'text-blue-300', 'bg-red-950', 'text-red-300');
-      box.classList.add(isError ? 'bg-red-950' : 'bg-blue-950', isError ? 'text-red-300' : 'text-blue-300');
+      box.classList.remove('hidden', 'bg-rose-950/70', 'text-rose-200', 'border-rose-700/50', 'bg-emerald-950/70', 'text-emerald-200', 'border-emerald-700/50');
+      if (isError) {
+        box.classList.add('bg-rose-950/70', 'text-rose-200', 'border-rose-700/50');
+      } else {
+        box.classList.add('bg-emerald-950/70', 'text-emerald-200', 'border-emerald-700/50');
+      }
       box.innerText = msg;
     }
 
-    // JSON Timestamp ကို SRT ဖော်မတ်ပြောင်းပေးသည့် စနစ် (Upgrade)
     function formatSrtTime(seconds) {
       const h = Math.floor(seconds / 3600);
       const m = Math.floor((seconds % 3600) / 60);
@@ -103,28 +248,83 @@
       return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')},${String(ms).padStart(3, '0')}`;
     }
 
+    function updateStep(step, status) {
+      const icon = document.getElementById(`step${step}Icon`);
+      const text = document.getElementById(`step${step}Text`);
+      const bar = document.getElementById('progressBar');
+
+      if (status === 'active') {
+        icon.innerText = "⏳";
+        icon.className = "w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-[10px] animate-ring";
+        text.className = "text-cyan-300 font-semibold flex items-center gap-2";
+        bar.style.width = step === 1 ? "40%" : "85%";
+      } else if (status === 'done') {
+        icon.innerText = "✓";
+        icon.className = "w-5 h-5 rounded-full bg-emerald-500 text-slate-950 font-bold flex items-center justify-center text-[10px]";
+        text.className = "text-emerald-400 font-medium flex items-center gap-2";
+        if (step === 2) bar.style.width = "100%";
+      } else {
+        icon.innerText = step;
+        icon.className = "w-5 h-5 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-[10px]";
+        text.className = "text-slate-400 flex items-center gap-2";
+      }
+    }
+
+    async function callGeminiWithFallback(prompt, apiKey, preferredModel) {
+      const modelsToTry = [preferredModel, "gemini-2.5-flash", "gemini-2.0-flash"];
+      const uniqueModels = [...new Set(modelsToTry)];
+      let lastError = "";
+
+      for (const model of uniqueModels) {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.2 }
+          })
+        });
+
+        if (res.ok) {
+          return await res.json();
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          lastError = errData.error?.message || `Model ${model} failed.`;
+        }
+      }
+      throw new Error(lastError);
+    }
+
     async function startProcess() {
       const groqKey = document.getElementById('groqKey').value.trim();
       const geminiKey = document.getElementById('geminiKey').value.trim();
+      const preferredModel = document.getElementById('geminiModel').value;
       const file = document.getElementById('mediaFile').files[0];
       const btn = document.getElementById('startBtn');
 
-      if (!groqKey || !geminiKey) return alert("Groq Key နှင့် Gemini Key ထည့်ပေးပါခင်ဗျာ။");
-      if (!file) return alert("ဖိုင်အရင် ရွေးပေးပါခင်ဗျာ။");
-      if (file.size > 25 * 1024 * 1024) return alert("ဖိုင်ဆိုဒ် 25MB ထက် ကြီးနေပါသည်။ MP3 အဖြစ်ပြောင်းပြီးမှ ထပ်စမ်းပါ။");
+      if (!groqKey || !geminiKey) {
+        document.getElementById('settingsPanel').open = true;
+        return showToast("⚠️ API Key နှစ်ခုလုံး အရင်ထည့်ပေးပါ");
+      }
+      if (!file) return showToast("⚠️ Video သို့မဟုတ် Audio ဖိုင် အရင်ရွေးပေးပါ");
+      if (file.size > 25 * 1024 * 1024) return showToast("⚠️ ဖိုင်ဆိုဒ် 25MB ထက် ကြီးနေပါသည်");
 
       btn.disabled = true;
-      btn.innerText = "လုပ်ဆောင်နေပါသည် (ခေတ္တစောင့်ပါ)...";
+      btn.classList.add('opacity-50');
+      btn.innerHTML = `<span>⏳ AI အလုပ်လုပ်နေပါသည်...</span>`;
+      
+      document.getElementById('statusBox').classList.add('hidden');
       document.getElementById('resultArea').classList.add('hidden');
+      document.getElementById('progressCard').classList.remove('hidden');
+      updateStep(1, 'active');
+      updateStep(2, 'idle');
 
       try {
-        // အဆင့် ၁ - Groq Whisper ဖြင့် JSON ဒေတာ ယူခြင်း
-        setStatus("၁/၂။ Groq AI ဖြင့် အသံနားထောင်ပြီး Timestamp တွက်ချက်နေပါသည်...");
-        
+        // Step 1: Groq Whisper Transcription
         const formData = new FormData();
         formData.append("file", file);
         formData.append("model", "whisper-large-v3-turbo");
-        formData.append("response_format", "verbose_json"); // SRT အစား verbose_json သုံးပြီး upgrade လုပ်ထားပါသည်
+        formData.append("response_format", "verbose_json");
 
         const groqRes = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
           method: "POST",
@@ -138,8 +338,6 @@
         }
         
         const data = await groqRes.json();
-        
-        // JSON ကို SRT Format အဖြစ် ကိုယ်တိုင်ပြောင်းလဲခြင်း
         let originalSrt = "";
         if (data.segments && data.segments.length > 0) {
           data.segments.forEach((seg, i) => {
@@ -148,67 +346,85 @@
             originalSrt += `${i + 1}\n${start} --> ${end}\n${seg.text.trim()}\n\n`;
           });
         } else {
-          throw new Error("အသံထဲမှ စာသားကို ရှာမတွေ့ပါ။");
+          throw new Error("အသံထဲမှ စကားပြောသံ ရှာမတွေ့ပါ။");
         }
 
-        // အဆင့် ၂ - Gemini ဖြင့် မြန်မာဘာသာပြန်ဆိုခြင်း
-        setStatus("၂/၂။ Gemini AI ဖြင့် Timestamp မလွဲစေဘဲ မြန်မာဘာသာ ပြန်ဆိုနေပါသည်...");
-        
-        const prompt = `Translate this SRT subtitle file into natural, spoken Myanmar (Burmese) language.
-Rules:
-1. DO NOT change any numbers, arrows (-->), or timestamp timings. Keep them 100% intact.
-2. Only translate the spoken text sentences into fluent Burmese.
-3. Return ONLY valid raw SRT text without any markdown wrappers (do NOT add \`\`\`srt).
+        storedOriginalSrt = originalSrt.trim();
+        updateStep(1, 'done');
+        updateStep(2, 'active');
+
+        // Step 2: Gemini Translation (with Auto-Fallback)
+        const prompt = `You are an expert Burmese subtitle translator. Translate the following SRT subtitle file into natural, conversational Myanmar (Burmese) language.
+
+STRICT RULES:
+1. Keep ALL sequence numbers and timestamps (00:00:00,000 --> 00:00:00,000) 100% untouched.
+2. Translate ONLY the subtitle text lines into natural spoken Burmese.
+3. Output ONLY the raw valid SRT text. Do NOT wrap in markdown code blocks like \`\`\`srt.
 
 Original SRT:
-${originalSrt}`;
+${storedOriginalSrt}`;
 
-        // Gemini 1.5 Flash က ဘာသာပြန်ပိုမြန်ပြီး ပိုတည်ငြိမ်ပါတယ်
-        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.2 } 
-          })
-        });
-
-        if (!geminiRes.ok) {
-          const errData = await geminiRes.json().catch(() => ({}));
-          throw new Error(errData.error?.message || "Gemini API အလုပ်မလုပ်ပါ။ Key စစ်ဆေးပါ။");
-        }
-
-        const geminiData = await geminiRes.json();
+        const geminiData = await callGeminiWithFallback(prompt, geminiKey, preferredModel);
         let translated = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "";
         translated = translated.replace(/```srt/gi, '').replace(/```/g, '').trim();
 
-        document.getElementById('srtOutput').value = translated;
+        storedMyanmarSrt = translated;
+        updateStep(2, 'done');
+
+        // Display Output
+        switchTab('my');
         document.getElementById('resultArea').classList.remove('hidden');
-        setStatus("✓ မြန်မာစာတန်းထိုး (Pro) အောင်မြင်စွာ ရရှိပါပြီ!");
+        setAlert("🎉 အချိန်ကိုက် မြန်မာစာတန်းထိုး (SRT) ထုတ်ယူခြင်း အောင်မြင်ပါပြီ!", false);
 
       } catch (err) {
-        setStatus("Error: " + err.message, true);
+        setAlert("Error: " + err.message, true);
+        if (storedOriginalSrt) {
+          // Gemini အဆင့်မှာ Error တက်ခဲ့ရင်တောင် Groq က ရထားတဲ့ မူရင်း SRT မဆုံးရှုံးအောင် ပြပေးခြင်း
+          storedMyanmarSrt = storedOriginalSrt;
+          switchTab('orig');
+          document.getElementById('resultArea').classList.remove('hidden');
+        }
       } finally {
         btn.disabled = false;
-        btn.innerText = "🚀 SRT ထုတ်ပြီး မြန်မာပြန်မည်";
+        btn.classList.remove('opacity-50');
+        btn.innerHTML = `<span>✨ SRT ထုတ်ပြီး မြန်မာပြန်မည်</span>`;
+      }
+    }
+
+    function switchTab(tab) {
+      activeTab = tab;
+      const myBtn = document.getElementById('tabMyBtn');
+      const origBtn = document.getElementById('tabOrigBtn');
+      const output = document.getElementById('srtOutput');
+
+      if (tab === 'my') {
+        myBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-cyan-500 text-slate-950 transition";
+        origBtn.className = "flex-1 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition";
+        output.value = storedMyanmarSrt;
+      } else {
+        origBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-cyan-500 text-slate-950 transition";
+        myBtn.className = "flex-1 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition";
+        output.value = storedOriginalSrt;
       }
     }
 
     function downloadSRT() {
       const text = document.getElementById('srtOutput').value;
+      const suffix = activeTab === 'my' ? 'myanmar' : 'original';
       const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = "myanmar_subtitles_pro.srt";
+      a.download = `subtitles_${suffix}.srt`;
       a.click();
       URL.revokeObjectURL(a.href);
+      showToast("📥 SRT ဖိုင် ဒေါင်းလုဒ်ဆွဲနေပါပြီ!");
     }
 
     function copyToClipboard() {
       const copyText = document.getElementById("srtOutput");
       copyText.select();
       navigator.clipboard.writeText(copyText.value);
-      alert("SRT စာသားအားလုံးကို Copy ကူးယူပြီးပါပြီ!");
+      showToast("📋 SRT စာသားအားလုံးကို Copy ကူးပြီးပါပြီ!");
     }
   </script>
 </body>
