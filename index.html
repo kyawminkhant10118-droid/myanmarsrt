@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AI Myanmar Subtitle Studio (Unlimited)</title>
+  <title>AI Myanmar Subtitle Studio v5.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', 'Padauk', sans-serif;
@@ -26,6 +26,14 @@
       100% { transform: scale(0.95); opacity: 0.8; }
     }
     .animate-ring { animation: pulse-ring 2s infinite; }
+    /* Toggle Switch Styling */
+    .toggle-checkbox:checked {
+      right: 0;
+      border-color: #06b6d4;
+    }
+    .toggle-checkbox:checked + .toggle-label {
+      background-color: #06b6d4;
+    }
   </style>
 </head>
 <body class="text-slate-100 min-h-screen p-4 pb-20 selection:bg-cyan-500 selection:text-black">
@@ -33,20 +41,20 @@
   <div class="max-w-md mx-auto">
     
     <!-- Top App Header -->
-    <div class="text-center pt-3 pb-6">
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-medium mb-3">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        v4.0 Unlimited File Size Edition
+    <div class="text-center pt-3 pb-5">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-[11px] font-bold mb-3">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        v5.0 Voice-Sync & Timestamp Lock
       </div>
       <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">
-        Video to Myanmar SRT
+        <strong>Video to Myanmar SRT</strong>
       </h1>
-      <p class="text-xs text-slate-400 mt-1">ဖိုင်ဆိုဒ် အကန့်အသတ်မရှိ (Auto Audio Compression & Chunking)</p>
+      <p class="text-xs font-bold text-slate-400 mt-1">အသံနှင့်အညီ အချိန်ကိုက် စာတန်းထိုးထုတ်စနစ်</p>
     </div>
 
     <!-- API & Model Settings Card -->
     <details id="settingsPanel" class="glass rounded-2xl mb-4 transition-all duration-300 shadow-xl">
-      <summary class="p-4 text-xs font-semibold text-slate-200 cursor-pointer select-none flex items-center justify-between">
+      <summary class="p-4 text-xs font-bold text-slate-200 cursor-pointer select-none flex items-center justify-between">
         <span class="flex items-center gap-2">
           <span class="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-400">🔑</span>
           API Keys နှင့် AI Model ပြင်ဆင်ရန်
@@ -73,24 +81,49 @@
             <option value="gemini-2.5-pro">🧠 Gemini 2.5 Pro (အသေးစိတ်ဆုံး)</option>
           </select>
         </div>
-        <button onclick="saveKeys()" class="w-full bg-gradient-to-r from-slate-800 to-slate-700 hover:from-slate-700 hover:to-slate-600 text-cyan-300 text-xs py-2.5 rounded-xl font-semibold border border-slate-600/50 transition">
+        <button onclick="saveKeys()" class="w-full bg-gradient-to-r from-slate-800 to-slate-700 hover:from-slate-700 hover:to-slate-600 text-cyan-300 text-xs py-2.5 rounded-xl font-bold border border-slate-600/50 transition">
           💾 Key များကို သိမ်းဆည်းမည်
         </button>
       </div>
     </details>
 
+    <!-- Smart Features Toggles Card (NEW) -->
+    <div class="glass rounded-2xl p-4 mb-4 shadow-xl space-y-3.5">
+      <div class="text-xs font-bold text-cyan-300 flex items-center gap-1.5 border-b border-slate-800 pb-2">
+        <span>⚙️</span> စာတန်းထိုး အထူးစနစ်များ (ဖွင့်/ပိတ်)
+      </div>
+
+      <!-- Feature 1: Voice Sync -->
+      <label class="flex items-center justify-between cursor-pointer">
+        <div class="pr-3">
+          <div class="text-xs font-bold text-slate-100">🎙️ အသံနှင့်အညီ အချိန်ညှိစနစ် (Voice-Sync)</div>
+          <div class="text-[10px] text-slate-400 mt-0.5">စကားသံ စ/ဆုံး အတိအကျနှင့် စာကြောင်းအရှည်များကို အသံအလိုက် ခွဲပေးမည်</div>
+        </div>
+        <input type="checkbox" id="voiceSyncToggle" checked onchange="saveFeaturePrefs()" class="w-5 h-5 accent-cyan-400 rounded cursor-pointer shrink-0">
+      </label>
+
+      <!-- Feature 2: Bold Names -->
+      <label class="flex items-center justify-between cursor-pointer pt-1 border-t border-slate-800/60">
+        <div class="pr-3">
+          <div class="text-xs font-bold text-slate-100">🅱️ နာမည်များကို <strong>Bold</strong> (စာလုံးအထူ) လုပ်မည်</div>
+          <div class="text-[10px] text-slate-400 mt-0.5">ဇာတ်ကောင်နာမည်နှင့် အခေါ်အဝေါ်များကို &lt;b&gt;နာမည်&lt;/b&gt; အထူပြုလုပ်ပေးမည်</div>
+        </div>
+        <input type="checkbox" id="boldNameToggle" checked onchange="onBoldToggleChange()" class="w-5 h-5 accent-cyan-400 rounded cursor-pointer shrink-0">
+      </label>
+    </div>
+
     <!-- File Upload Card -->
     <div class="glass rounded-2xl p-4 mb-4 shadow-xl">
-      <label class="block text-xs font-semibold text-slate-300 mb-2.5 flex items-center justify-between">
+      <label class="block text-xs font-bold text-slate-300 mb-2.5 flex items-center justify-between">
         <span class="flex items-center gap-1.5"><span>📁</span> Video သို့မဟုတ် Audio ဖိုင်ရွေးချယ်ပါ</span>
-        <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">Unlimited Size</span>
+        <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20 font-bold">Unlimited Size</span>
       </label>
       
       <label for="mediaFile" class="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-cyan-400/70 rounded-xl p-5 cursor-pointer bg-slate-950/40 transition group">
         <div class="w-11 h-11 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition">
           🎬
         </div>
-        <span id="fileNameDisplay" class="text-xs font-medium text-cyan-300 text-center break-all px-2">
+        <span id="fileNameDisplay" class="text-xs font-bold text-cyan-300 text-center break-all px-2">
           ဖုန်းထဲမှ ဖိုင်ရွေးရန် ဒီနေရာကို နှိပ်ပါ
         </span>
         <span id="fileSizeDisplay" class="text-[11px] text-slate-400 mt-1 text-center">
@@ -102,7 +135,7 @@
 
     <!-- Main Action Button -->
     <button id="startBtn" onclick="startProcess()" 
-      class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 active:scale-[0.99] text-slate-950 font-bold py-4 rounded-2xl glow-btn transition text-sm flex items-center justify-center gap-2">
+      class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 active:scale-[0.99] text-slate-950 font-extrabold py-4 rounded-2xl glow-btn transition text-sm flex items-center justify-center gap-2">
       <span>✨ SRT ထုတ်ပြီး မြန်မာပြန်မည်</span>
     </button>
 
@@ -117,13 +150,13 @@
       <div class="flex items-center justify-between text-xs">
         <span id="step1Text" class="text-slate-400 flex items-center gap-2">
           <span id="step1Icon" class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">2</span>
-          <span id="step1Label">Groq Whisper ဖြင့် အချိန်ကိုက် အသံဖမ်းခြင်း</span>
+          <span id="step1Label">Groq Whisper ဖြင့် အသံနှင့်အညီ အချိန်ဖမ်းခြင်း</span>
         </span>
       </div>
       <div class="flex items-center justify-between text-xs">
         <span id="step2Text" class="text-slate-400 flex items-center gap-2">
           <span id="step2Icon" class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">3</span>
-          <span id="step2Label">Gemini AI ဖြင့် မြန်မာပြန်နှင့် သန့်စင်ခြင်း</span>
+          <span id="step2Label">Gemini AI ဖြင့် အချိန်မပျက် မြန်မာပြန်ခြင်း</span>
         </span>
       </div>
       <div class="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden">
@@ -150,7 +183,7 @@
       <textarea id="srtOutput" class="w-full h-64 bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 text-xs text-slate-200 font-mono leading-relaxed focus:outline-none focus:border-cyan-500/50"></textarea>
       
       <div class="flex items-center justify-between">
-        <button onclick="manualClean()" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-amber-300 px-2.5 py-1 rounded-lg border border-slate-700 transition">
+        <button onclick="manualClean()" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-amber-300 px-2.5 py-1 rounded-lg border border-slate-700 font-semibold transition">
           🧹 အမှိုက်ကုဒ်များ ထပ်မံသန့်စင်မည်
         </button>
         <p class="text-[10px] text-slate-500">💡 စာသားများကို တိုက်ရိုက် ပြင်ဆင်နိုင်သည်</p>
@@ -158,10 +191,10 @@
 
       <!-- Action Buttons -->
       <div class="grid grid-cols-2 gap-2.5 pt-1">
-        <button onclick="downloadSRT()" class="bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 text-xs py-3 rounded-xl font-bold shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-1.5">
+        <button onclick="downloadSRT()" class="bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 text-xs py-3 rounded-xl font-extrabold shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-1.5">
           📥 SRT ဖိုင် ဒေါင်းမည်
         </button>
-        <button onclick="copyToClipboard()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-cyan-300 border border-slate-700 text-xs py-3 rounded-xl font-bold transition flex items-center justify-center gap-1.5">
+        <button onclick="copyToClipboard()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-cyan-300 border border-slate-700 text-xs py-3 rounded-xl font-extrabold transition flex items-center justify-center gap-1.5">
           📋 Copy ကူးမည်
         </button>
       </div>
@@ -170,21 +203,24 @@
   </div>
 
   <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-800 border border-cyan-500/40 text-cyan-300 px-4 py-2.5 rounded-full text-xs font-medium shadow-2xl hidden z-50"></div>
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-800 border border-cyan-500/40 text-cyan-300 px-4 py-2.5 rounded-full text-xs font-bold shadow-2xl hidden z-50"></div>
 
   <script>
-    let storedMyanmarSrt = "";
-    let storedOriginalSrt = "";
+    let finalSegments = []; // [{ start, end, origText, myTextRaw }]
     let activeTab = "my";
 
     window.onload = () => {
       const gKey = localStorage.getItem('groq_key') || "";
       const gemKey = localStorage.getItem('gemini_key') || "";
       const savedModel = localStorage.getItem('gemini_model') || "gemini-2.5-flash";
+      const voiceSync = localStorage.getItem('voice_sync') !== 'false';
+      const boldNames = localStorage.getItem('bold_names') !== 'false';
 
       document.getElementById('groqKey').value = gKey;
       document.getElementById('geminiKey').value = gemKey;
       document.getElementById('geminiModel').value = savedModel;
+      document.getElementById('voiceSyncToggle').checked = voiceSync;
+      document.getElementById('boldNameToggle').checked = boldNames;
 
       updateKeyBadge(gKey, gemKey);
       if (!gKey || !gemKey) {
@@ -192,23 +228,52 @@
       }
     };
 
-    // Emoji နှင့် Unicode အပျက်များ (ud83c...) ကို ရှင်းလင်းပေးသည့် Function
-    function cleanCorruptedText(text) {
-      if (!text) return "";
-      return text
+    function saveFeaturePrefs() {
+      localStorage.setItem('voice_sync', document.getElementById('voiceSyncToggle').checked);
+      localStorage.setItem('bold_names', document.getElementById('boldNameToggle').checked);
+    }
+
+    function onBoldToggleChange() {
+      saveFeaturePrefs();
+      if (finalSegments.length > 0) {
+        renderSrtOutput();
+        showToast(document.getElementById('boldNameToggle').checked ? "🅱️ နာမည် Bold စနစ် ဖွင့်လိုက်ပါပြီ" : "နာမည် Bold စနစ် ပိတ်လိုက်ပါပြီ");
+      }
+    }
+
+    // စာကြောင်းတစ်ကြောင်းချင်းစီထဲမှ အမှိုက်ကုဒ်များနှင့် မှားပါလာသော အချိန်နံပါတ်များကို သန့်စင်ခြင်း
+    function sanitizeSubtitleLine(line, allowBoldTag = true) {
+      if (!line) return "";
+      let cleaned = line
+        // Unicode Surrogate အပျက်များ (ud83c...) နှင့် Emoji များကို ဖယ်ရှားခြင်း
         .replace(/\\?u[dD][89abAB][0-9a-fA-F]{2}\s*\\?u[dD][c-fC-F][0-9a-fA-F]{2}/g, '')
         .replace(/\\?u[dD][89abABc-fC-F][0-9a-fA-F]{2}/g, '')
         .replace(/\\u[0-9a-fA-F]{4}/g, '')
         .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1FA00}-\u{1FAFF}]/gu, '')
+        // စာသားထဲ မှားပါလာတတ်သော Timestamp အပိုင်းအစများ (00:00:00,000 --> 00:00:00,000) ကို အပြီးတိုင် ဖယ်ရှားခြင်း
+        .replace(/\d*\s*\d{2}:\d{2}:\d{2}[.,]\d{3}\s*(?:-->|->|→)\s*\d{2}:\d{2}:\d{2}[.,]\d{3}/g, '')
+        // Markdown **နာမည်** ကို <b>နာမည်</b> အဖြစ် ပြောင်းလဲခြင်း
+        .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+        .replace(/\r?\n/g, ' ')
         .replace(/  +/g, ' ')
         .trim();
+
+      if (!allowBoldTag) {
+        cleaned = cleaned.replace(/<\/?b>/gi, '');
+      }
+      return cleaned;
     }
 
     function manualClean() {
-      const output = document.getElementById('srtOutput');
-      output.value = cleanCorruptedText(output.value);
-      if (activeTab === 'my') storedMyanmarSrt = output.value;
-      showToast("🧹 အမှိုက်ကုဒ်များနှင့် Emoji များကို သန့်စင်ပြီးပါပြီ!");
+      if (finalSegments.length > 0) {
+        renderSrtOutput();
+      } else {
+        const out = document.getElementById('srtOutput');
+        out.value = out.value
+          .replace(/\\?u[dD][89abAB][0-9a-fA-F]{2}\s*\\?u[dD][c-fC-F][0-9a-fA-F]{2}/g, '')
+          .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1FA00}-\u{1FAFF}]/gu, '');
+      }
+      showToast("🧹 စာသားများကို သန့်စင်ပြီးပါပြီ!");
     }
 
     function updateKeyBadge(gKey, gemKey) {
@@ -273,10 +338,11 @@
     }
 
     function formatSrtTime(seconds) {
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      const s = Math.floor(seconds % 60);
-      const ms = Math.floor((seconds % 1) * 1000);
+      const safeSec = Math.max(0, Number(seconds) || 0);
+      const h = Math.floor(safeSec / 3600);
+      const m = Math.floor((safeSec % 3600) / 60);
+      const s = Math.floor(safeSec % 60);
+      const ms = Math.floor((safeSec % 1) * 1000);
       return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')},${String(ms).padStart(3, '0')}`;
     }
 
@@ -291,12 +357,12 @@
       if (status === 'active') {
         icon.innerText = "⏳";
         icon.className = "w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-[10px] animate-ring";
-        text.className = "text-cyan-300 font-semibold flex items-center gap-2";
+        text.className = "text-cyan-300 font-bold flex items-center gap-2";
         bar.style.width = step === 0 ? "25%" : step === 1 ? "60%" : "85%";
       } else if (status === 'done') {
         icon.innerText = "✓";
         icon.className = "w-5 h-5 rounded-full bg-emerald-500 text-slate-950 font-bold flex items-center justify-center text-[10px]";
-        text.className = "text-emerald-400 font-medium flex items-center gap-2";
+        text.className = "text-emerald-400 font-bold flex items-center gap-2";
         if (step === 2) bar.style.width = "100%";
       } else {
         icon.innerText = step + 1;
@@ -305,7 +371,6 @@
       }
     }
 
-    // AudioBuffer ကို ပေါ့ပါးသော 16kHz Mono WAV Blob အဖြစ် ပြောင်းလဲခြင်း
     function audioBufferToWavBlob(buffer) {
       const samples = buffer.getChannelData(0);
       const sampleRate = buffer.sampleRate;
@@ -340,9 +405,7 @@
       return new Blob([out], { type: 'audio/wav' });
     }
 
-    // ဖိုင်ဆိုဒ် ကြီးမားသော ဗီဒီယိုများကို ၁၀ မိနစ်စီ အပိုင်းခွဲပြီး 16kHz အသံဖိုင်များအဖြစ် ထုတ်ယူခြင်း
     async function extractAndChunkAudio(file) {
-      // 20MB အောက် ဖိုင်ငယ်များဖြစ်ပါက မူရင်းအတိုင်း တိုက်ရိုက်ပို့မည် (အချိန်ပိုမြန်စေရန်)
       if (file.size <= 20 * 1024 * 1024) {
         return [{ blob: file, fileName: file.name, offsetSeconds: 0 }];
       }
@@ -351,8 +414,8 @@
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const decodedBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
-      const TARGET_RATE = 16000; // Whisper AI အတွက် အကောင်းဆုံးနှုန်း
-      const CHUNK_SECONDS = 600; // ၁၀ မိနစ်လျှင် တစ်ပိုင်း (~18MB per chunk)
+      const TARGET_RATE = 16000;
+      const CHUNK_SECONDS = 600;
       const totalDuration = decodedBuffer.duration;
       const totalChunks = Math.ceil(totalDuration / CHUNK_SECONDS);
       const chunks = [];
@@ -383,6 +446,55 @@
       return chunks;
     }
 
+    // 🎙️ Voice-Sync Engine: စကားသံနှင့် စာတန်းထိုး အတိအကျ ကိုက်ညီစေရန် ညှိပေးသည့်စနစ်
+    function applyVoiceSyncRefinement(rawSegments, words, offsetSeconds, enableVoiceSync) {
+      let refined = [];
+
+      rawSegments.forEach(seg => {
+        const text = sanitizeSubtitleLine(seg.text, false);
+        if (!text) return;
+
+        let sStart = seg.start + offsetSeconds;
+        let sEnd = seg.end + offsetSeconds;
+
+        if (enableVoiceSync) {
+          // Word-level timestamps ရရှိပါက စကားစပြောသည့် အချိန်အတိအကျသို့ ကပ်ပေးခြင်း
+          if (words && words.length > 0) {
+            const segWords = words.filter(w => w.start >= seg.start - 0.1 && w.end <= seg.end + 0.1);
+            if (segWords.length > 0) {
+              sStart = segWords[0].start + offsetSeconds;
+              sEnd = segWords[segWords.length - 1].end + offsetSeconds;
+            }
+          }
+
+          // စကားမပြောဘဲ ရှည်နေသော စာတန်းထိုးချိန်များကို သဘာဝကျအောင် ညှိခြင်း (Max 5 seconds per line)
+          const maxAllowedDuration = Math.max(2.2, Math.min(5.5, text.length * 0.12));
+          if (sEnd - sStart > maxAllowedDuration) {
+            sEnd = sStart + maxAllowedDuration;
+          }
+          if (sEnd - sStart < 0.8) {
+            sEnd = sStart + 0.9;
+          }
+        }
+
+        refined.push({
+          start: sStart,
+          end: sEnd,
+          origText: text,
+          myTextRaw: text
+        });
+      });
+
+      // စာတန်းထိုးတစ်ခုနှင့်တစ်ခု အချိန်ထပ်မနေစေရန် (No Overlap) စစ်ဆေးခြင်း
+      for (let i = 0; i < refined.length - 1; i++) {
+        if (refined[i].end > refined[i + 1].start) {
+          refined[i].end = Math.max(refined[i].start + 0.4, refined[i + 1].start - 0.04);
+        }
+      }
+
+      return refined;
+    }
+
     async function callGeminiWithFallback(prompt, apiKey, preferredModel) {
       const modelsToTry = [preferredModel, "gemini-2.5-flash", "gemini-2.0-flash"];
       const uniqueModels = [...new Set(modelsToTry)];
@@ -394,7 +506,10 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.1 }
+            generationConfig: {
+              temperature: 0.1,
+              responseMimeType: "application/json"
+            }
           })
         });
 
@@ -408,10 +523,28 @@
       throw new Error(lastError);
     }
 
+    // JavaScript မှနေ၍ အချိန် (Timestamp) များကို တိုက်ရိုက် ပြန်တပ်ဆင်ပေးသည့်စနစ် (လုံးဝ အချိန်မပျက်နိုင်ပါ)
+    function renderSrtOutput() {
+      const useBold = document.getElementById('boldNameToggle').checked;
+      const output = document.getElementById('srtOutput');
+
+      const blocks = finalSegments.map((seg, idx) => {
+        const startStr = formatSrtTime(seg.start);
+        const endStr = formatSrtTime(seg.end);
+        const rawLine = activeTab === 'my' ? seg.myTextRaw : seg.origText;
+        const cleanLine = sanitizeSubtitleLine(rawLine, useBold);
+        return `${idx + 1}\n${startStr} --> ${endStr}\n${cleanLine}`;
+      });
+
+      output.value = blocks.join('\n\n');
+    }
+
     async function startProcess() {
       const groqKey = document.getElementById('groqKey').value.trim();
       const geminiKey = document.getElementById('geminiKey').value.trim();
       const preferredModel = document.getElementById('geminiModel').value;
+      const enableVoiceSync = document.getElementById('voiceSyncToggle').checked;
+      const enableBoldNames = document.getElementById('boldNameToggle').checked;
       const file = document.getElementById('mediaFile').files[0];
       const btn = document.getElementById('startBtn');
 
@@ -430,8 +563,8 @@
       document.getElementById('progressCard').classList.remove('hidden');
       
       updateStep(0, 'active', 'ဗီဒီယိုထဲမှ အသံခွဲထုတ်ပြီး ဆိုဒ်ချုံ့နေပါသည်...');
-      updateStep(1, 'idle', 'Groq Whisper ဖြင့် အချိန်ကိုက် အသံဖမ်းခြင်း');
-      updateStep(2, 'idle', 'Gemini AI ဖြင့် မြန်မာပြန်နှင့် သန့်စင်ခြင်း');
+      updateStep(1, 'idle', 'Groq Whisper ဖြင့် အသံနှင့်အညီ အချိန်ဖမ်းခြင်း');
+      updateStep(2, 'idle', 'Gemini AI ဖြင့် အချိန်မပျက် မြန်မာပြန်ခြင်း');
 
       try {
         // Step 0: Extract & Chunk Audio
@@ -440,7 +573,7 @@
 
         // Step 1: Transcribe All Chunks with Groq Whisper
         updateStep(1, 'active');
-        let allSegments = [];
+        finalSegments = [];
 
         for (let c = 0; c < audioChunks.length; c++) {
           const chunk = audioChunks[c];
@@ -450,6 +583,10 @@
           formData.append("file", chunk.blob, chunk.fileName);
           formData.append("model", "whisper-large-v3-turbo");
           formData.append("response_format", "verbose_json");
+          formData.append("timestamp_granularities[]", "segment");
+          if (enableVoiceSync) {
+            formData.append("timestamp_granularities[]", "word");
+          }
 
           const groqRes = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
             method: "POST",
@@ -464,67 +601,83 @@
           
           const data = await groqRes.json();
           if (data.segments && data.segments.length > 0) {
-            data.segments.forEach(seg => {
-              allSegments.push({
-                start: seg.start + chunk.offsetSeconds,
-                end: seg.end + chunk.offsetSeconds,
-                text: cleanCorruptedText(seg.text)
-              });
-            });
+            const refined = applyVoiceSyncRefinement(data.segments, data.words || [], chunk.offsetSeconds, enableVoiceSync);
+            finalSegments.push(...refined);
           }
         }
 
-        if (allSegments.length === 0) {
+        if (finalSegments.length === 0) {
           throw new Error("အသံထဲမှ စကားပြောသံ ရှာမတွေ့ပါ။");
         }
 
-        // Build SRT Blocks
-        const srtBlocks = allSegments.map((seg, idx) => {
-          return `${idx + 1}\n${formatSrtTime(seg.start)} --> ${formatSrtTime(seg.end)}\n${seg.text}`;
-        });
+        updateStep(1, 'done', `အသံဖမ်းယူမှု ပြီးဆုံးပါပြီ (စာကြောင်းရေ ${finalSegments.length} ကြောင်း)`);
 
-        storedOriginalSrt = srtBlocks.join('\n\n');
-        updateStep(1, 'done', `အသံဖမ်းယူမှု ပြီးဆုံးပါပြီ (စာကြောင်းရေ ${srtBlocks.length} ကြောင်း)`);
-
-        // Step 2: Gemini Batch Translation (စာကြောင်း ၆၀ စီ အပိုင်းခွဲပြန်ပေးခြင်းဖြင့် ဇာတ်ကားရှည်များ မပြတ်တောက်စေရန်)
+        // Step 2: Gemini Strict JSON Batch Translation (Timestamp လုံးဝ မပို့ဘဲ စာသားသက်သက်သာ ပို့သည့်စနစ်)
         updateStep(2, 'active');
-        const BATCH_SIZE = 60;
-        const totalBatches = Math.ceil(srtBlocks.length / BATCH_SIZE);
-        let translatedBatches = [];
+        const BATCH_SIZE = 45;
+        const totalBatches = Math.ceil(finalSegments.length / BATCH_SIZE);
 
         for (let b = 0; b < totalBatches; b++) {
           updateStep(2, 'active', `Gemini AI ဖြင့် မြန်မာပြန်နေသည် (အပိုင်း ${b + 1}/${totalBatches})...`);
-          const batchText = srtBlocks.slice(b * BATCH_SIZE, (b + 1) * BATCH_SIZE).join('\n\n');
+          const startIdx = b * BATCH_SIZE;
+          const batchSlice = finalSegments.slice(startIdx, startIdx + BATCH_SIZE);
 
-          const prompt = `You are a professional Burmese movie subtitle translator. Translate the following SRT subtitle blocks into natural, conversational Myanmar (Burmese) language.
+          const inputPayload = batchSlice.map((seg, i) => ({
+            id: i,
+            text: seg.origText,
+            duration_sec: Number((seg.end - seg.start).toFixed(1))
+          }));
 
-CRITICAL RULES:
-1. Keep ALL sequence numbers and timestamps (00:00:00,000 --> 00:00:00,000) 100% untouched.
-2. Translate ONLY the spoken dialogue into natural Myanmar.
-3. NEVER use any emojis, icons, special symbols, or unicode escape codes (like ud83c, \\u, etc.). Use ONLY pure Myanmar Unicode text.
-4. Output ONLY the raw valid SRT text without markdown blocks.
+          const syncInstruction = enableVoiceSync
+            ? "Keep each Burmese translation concise and natural so it can be spoken comfortably within its `duration_sec`."
+            : "Translate naturally and accurately into spoken Burmese.";
 
-Original SRT:
-${batchText}`;
+          const boldInstruction = enableBoldNames
+            ? "Wrap ALL character names, person names, sect/clan names, and titles (e.g. <b>ဆရာကြီး</b>, <b>သခင်လေး</b>) in HTML <b>...</b> bold tags."
+            : "Do NOT use any HTML tags.";
+
+          const prompt = `You are a master Burmese subtitle translator for movies and dramas.
+Translate each item's "text" into natural, spoken Myanmar (Burmese).
+
+STRICT RULES:
+1. ${syncInstruction}
+2. ${boldInstruction}
+3. NEVER include any timestamps, sequence numbers, arrows (--> or →), or emojis.
+4. Return a valid JSON array of objects in the exact same order: [{"id": 0, "my": "မြန်မာပြန်စာသား"}, ...]
+
+Input JSON:
+${JSON.stringify(inputPayload)}`;
 
           const geminiData = await callGeminiWithFallback(prompt, geminiKey, preferredModel);
-          let partTranslated = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "";
-          partTranslated = partTranslated.replace(/```srt/gi, '').replace(/```/g, '').trim();
-          translatedBatches.push(cleanCorruptedText(partTranslated));
+          const rawJsonText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
+
+          let parsedList = [];
+          try {
+            parsedList = JSON.parse(rawJsonText);
+          } catch (e) {
+            // JSON parse မရပါက fallback စနစ်ဖြင့် ဆွဲထုတ်ခြင်း
+            const match = rawJsonText.match(/\[[\s\S]*\]/);
+            if (match) parsedList = JSON.parse(match[0]);
+          }
+
+          batchSlice.forEach((seg, i) => {
+            const found = Array.isArray(parsedList) ? (parsedList.find(item => item.id === i) || parsedList[i]) : null;
+            if (found && found.my) {
+              seg.myTextRaw = found.my;
+            }
+          });
         }
 
-        storedMyanmarSrt = translatedBatches.join('\n\n');
         updateStep(2, 'done', 'မြန်မာဘာသာပြန်ဆိုမှု ၁၀၀% ပြီးဆုံးပါပြီ!');
 
         // Display Output
         switchTab('my');
         document.getElementById('resultArea').classList.remove('hidden');
-        setAlert("🎉 ဖိုင်ဆိုဒ်အရှည်ကြီးအတွက် အချိန်ကိုက် မြန်မာစာတန်းထိုး (SRT) ရရှိပါပြီ!", false);
+        setAlert("🎉 အချိန်လုံးဝမပျက်ဘဲ အသံနှင့်အညီ ချိန်ညှိထားသော မြန်မာစာတန်းထိုး ရရှိပါပြီ!", false);
 
       } catch (err) {
         setAlert("Error: " + err.message, true);
-        if (storedOriginalSrt) {
-          storedMyanmarSrt = storedOriginalSrt;
+        if (finalSegments.length > 0) {
           switchTab('orig');
           document.getElementById('resultArea').classList.remove('hidden');
         }
@@ -539,21 +692,19 @@ ${batchText}`;
       activeTab = tab;
       const myBtn = document.getElementById('tabMyBtn');
       const origBtn = document.getElementById('tabOrigBtn');
-      const output = document.getElementById('srtOutput');
 
       if (tab === 'my') {
         myBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-cyan-500 text-slate-950 transition";
         origBtn.className = "flex-1 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition";
-        output.value = storedMyanmarSrt;
       } else {
         origBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-cyan-500 text-slate-950 transition";
         myBtn.className = "flex-1 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition";
-        output.value = storedOriginalSrt;
       }
+      renderSrtOutput();
     }
 
     function downloadSRT() {
-      const text = cleanCorruptedText(document.getElementById('srtOutput').value);
+      const text = document.getElementById('srtOutput').value;
       const suffix = activeTab === 'my' ? 'myanmar' : 'original';
       const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
       const a = document.createElement('a');
@@ -566,7 +717,6 @@ ${batchText}`;
 
     function copyToClipboard() {
       const copyText = document.getElementById("srtOutput");
-      copyText.value = cleanCorruptedText(copyText.value);
       copyText.select();
       navigator.clipboard.writeText(copyText.value);
       showToast("📋 သန့်စင်ပြီးသား SRT စာသားကို Copy ကူးပြီးပါပြီ!");
