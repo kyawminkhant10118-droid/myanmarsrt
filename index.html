@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AI Myanmar Subtitle Studio v5.5</title>
+  <title>AI Myanmar Subtitle Studio v6.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -36,12 +36,12 @@
     <div class="text-center pt-3 pb-5">
       <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold mb-3">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        v5.5 Pure Myanmar Edition (100% Code-Free)
+        v6.0 Smart Context & Natural Burmese
       </div>
       <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">
         <strong>Video to Myanmar SRT</strong>
       </h1>
-      <p class="text-xs font-bold text-slate-400 mt-1">အမှိုက်ကုဒ် လုံးဝမပါသော အသံကိုက် မြန်မာစာတန်းထိုးစနစ်</p>
+      <p class="text-xs font-bold text-slate-400 mt-1">ဗီဒီယိုဇာတ်လမ်းအလိုက် သဘာဝကျကျ မြန်မာပြန်စနစ်</p>
     </div>
 
     <!-- API & Model Settings Card -->
@@ -68,9 +68,9 @@
         <div>
           <label class="block text-[11px] text-slate-400 mb-1">Gemini AI Model ရွေးချယ်ရန်</label>
           <select id="geminiModel" class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-cyan-300 focus:outline-none focus:border-cyan-400">
-            <option value="gemini-2.5-flash">⚡ Gemini 2.5 Flash (အမြန်ဆုံးနှင့် အကောင်းဆုံး)</option>
+            <option value="gemini-2.5-flash">⚡ Gemini 2.5 Flash (အမြန်ဆုံးနှင့် သဘာဝအကျဆုံး)</option>
+            <option value="gemini-2.5-pro">🧠 Gemini 2.5 Pro (အသေးစိတ်ဆုံး အဆင့်မြင့်မော်ဒယ်)</option>
             <option value="gemini-2.0-flash">🚀 Gemini 2.0 Flash (တည်ငြိမ်သော မော်ဒယ်)</option>
-            <option value="gemini-2.5-pro">🧠 Gemini 2.5 Pro (အသေးစိတ်ဆုံး)</option>
           </select>
         </div>
         <button onclick="saveKeys()" class="w-full bg-gradient-to-r from-slate-800 to-slate-700 hover:from-slate-700 hover:to-slate-600 text-cyan-300 text-xs py-2.5 rounded-xl font-bold border border-slate-600/50 transition">
@@ -79,17 +79,36 @@
       </div>
     </details>
 
-    <!-- Smart Features Toggles Card -->
+    <!-- Smart Context & Features Card -->
     <div class="glass rounded-2xl p-4 mb-4 shadow-xl space-y-3.5">
       <div class="text-xs font-bold text-cyan-300 flex items-center gap-1.5 border-b border-slate-800 pb-2">
-        <span>⚙️</span> စာတန်းထိုး အထူးစနစ်များ (ဖွင့်/ပိတ်)
+        <span>🎭</span> ဗီဒီယို အမျိုးအစားနှင့် ဘာသာပြန်ဟန်
+      </div>
+
+      <!-- Video Genre Selector -->
+      <div>
+        <label class="block text-xs font-bold text-slate-100 mb-1">🎬 ဗီဒီယို အမျိုးအစား (Genre & Tone)</label>
+        <select id="genreSelect" onchange="saveFeaturePrefs()" class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-3 py-2.5 text-xs text-cyan-300 font-semibold focus:outline-none focus:border-cyan-400">
+          <option value="auto">🧠 AI Auto-Detect (ဇာတ်လမ်းကို AI က အလိုအလျောက် သုံးသပ်ပြန်မည်)</option>
+          <option value="wuxia">⚔️ တရုတ် ရှေးဟောင်း / သိုင်း / နန်းတွင်းကား (သိုင်းနှင့် နန်းတွင်းစကားပြောဟန်)</option>
+          <option value="modern">🏙️ ခေတ်ပေါ် ဇာတ်လမ်းတွဲ / CEO / အချစ်ကား (နေ့စဉ်သုံး သဘာဝစကားပြောဟန်)</option>
+          <option value="action">🔥 အက်ရှင် / မှုခင်း / စိတ်လှုပ်ရှားဖွယ်ကား (ပြတ်သားမြန်ဆန်သော လေသံ)</option>
+          <option value="recap">🎙️ Movie Recap / ဇာတ်လမ်းပြောပြချက် (တင်ဆက်သူ လေသံ)</option>
+        </select>
+      </div>
+
+      <!-- Optional Context Hint -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">📝 ဇာတ်လမ်းအညွှန်း (မထည့်လည်း ရပါသည်)</label>
+        <input type="text" id="customContext" placeholder="ဥပမာ - မင်းသားက အရူးဟန်ဆောင်ပြီး ပြန်လာတဲ့ နန်းတွင်းကား..." 
+          class="w-full bg-slate-950/70 border border-slate-700/70 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-400">
       </div>
 
       <!-- Feature 1: Voice Sync -->
-      <label class="flex items-center justify-between cursor-pointer">
+      <label class="flex items-center justify-between cursor-pointer pt-2 border-t border-slate-800/60">
         <div class="pr-3">
           <div class="text-xs font-bold text-slate-100">🎙️ အသံနှင့်အညီ အချိန်ညှိစနစ် (Voice-Sync)</div>
-          <div class="text-[10px] text-slate-400 mt-0.5">စကားသံ စ/ဆုံး အတိအကျနှင့် စာကြောင်းအရှည်များကို အသံအလိုက် ခွဲပေးမည်</div>
+          <div class="text-[10px] text-slate-400 mt-0.5">စကားသံ စ/ဆုံး အတိအကျနှင့် အသံအရှည်အလိုက် စာတန်းချိန်ညှိပေးမည်</div>
         </div>
         <input type="checkbox" id="voiceSyncToggle" checked onchange="saveFeaturePrefs()" class="w-5 h-5 accent-cyan-400 rounded cursor-pointer shrink-0">
       </label>
@@ -129,7 +148,7 @@
     <!-- Main Action Button -->
     <button id="startBtn" onclick="startProcess()" 
       class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 active:scale-[0.99] text-slate-950 font-extrabold py-4 rounded-2xl glow-btn transition text-sm flex items-center justify-center gap-2">
-      <span>✨ SRT ထုတ်ပြီး မြန်မာပြန်မည်</span>
+      <span>✨ SRT ထုတ်ပြီး သဘာဝကျကျ မြန်မာပြန်မည်</span>
     </button>
 
     <!-- Visual Stepper Progress -->
@@ -149,13 +168,22 @@
       <div class="flex items-center justify-between text-xs">
         <span id="step2Text" class="text-slate-400 flex items-center gap-2">
           <span id="step2Icon" class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">3</span>
-          <span id="step2Label">Gemini AI ဖြင့် အချိန်မပျက် သန့်စင်မြန်မာပြန်ခြင်း</span>
+          <span id="step2Label">ဇာတ်လမ်းအကြောင်းအရာနှင့် လေသံကို သုံးသပ်ခြင်း</span>
+        </span>
+      </div>
+      <div class="flex items-center justify-between text-xs">
+        <span id="step3Text" class="text-slate-400 flex items-center gap-2">
+          <span id="step3Icon" class="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-[10px]">4</span>
+          <span id="step3Label">Gemini AI ဖြင့် သဘာဝကျကျ မြန်မာပြန်ဆိုခြင်း</span>
         </span>
       </div>
       <div class="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden">
         <div id="progressBar" class="bg-gradient-to-r from-cyan-400 to-blue-500 h-full w-0 transition-all duration-500"></div>
       </div>
     </div>
+
+    <!-- Detected Story Context Badge -->
+    <div id="contextSummaryBox" class="mt-3 p-3 rounded-xl bg-cyan-950/40 border border-cyan-800/40 text-[11px] text-cyan-200 hidden leading-relaxed"></div>
 
     <!-- Error / Alert Box -->
     <div id="statusBox" class="mt-4 p-3.5 rounded-2xl text-xs leading-relaxed hidden border"></div>
@@ -172,7 +200,7 @@
         </button>
       </div>
 
-      <!-- Editable Textarea (Bold Font Display) -->
+      <!-- Editable Textarea -->
       <textarea id="srtOutput" class="w-full h-64 bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 text-xs font-bold text-slate-100 font-mono leading-relaxed focus:outline-none focus:border-cyan-500/50"></textarea>
       
       <div class="flex items-center justify-between">
@@ -208,12 +236,14 @@
       const savedModel = localStorage.getItem('gemini_model') || "gemini-2.5-flash";
       const voiceSync = localStorage.getItem('voice_sync') !== 'false';
       const nameStyle = localStorage.getItem('name_style') || "clean";
+      const genre = localStorage.getItem('video_genre') || "auto";
 
       document.getElementById('groqKey').value = gKey;
       document.getElementById('geminiKey').value = gemKey;
       document.getElementById('geminiModel').value = savedModel;
       document.getElementById('voiceSyncToggle').checked = voiceSync;
       document.getElementById('nameStyleSelect').value = nameStyle;
+      document.getElementById('genreSelect').value = genre;
 
       updateKeyBadge(gKey, gemKey);
       if (!gKey || !gemKey) {
@@ -224,6 +254,7 @@
     function saveFeaturePrefs() {
       localStorage.setItem('voice_sync', document.getElementById('voiceSyncToggle').checked);
       localStorage.setItem('name_style', document.getElementById('nameStyleSelect').value);
+      localStorage.setItem('video_genre', document.getElementById('genreSelect').value);
     }
 
     function onNameStyleChange() {
@@ -234,32 +265,26 @@
       }
     }
 
-    // 🛡️ Pure Myanmar Sanitizer: "လူအ ud ဆောင်"၊ "ud83c..."၊ "<b>" နှင့် အင်္ဂလိပ်ကုဒ် အမှိုက်အားလုံးကို ရှင်းလင်းပေးသည့်စနစ်
+    // 🛡️ Pure Myanmar Sanitizer
     function sanitizeSubtitleLine(line, isMyanmar = true) {
       if (!line) return "";
       const nameStyle = document.getElementById('nameStyleSelect').value;
 
       let cleaned = line
-        // 1. "လူအ ud ဆောင်" သို့မဟုတ် "လူအ ud83c... ဆောင်" ကဲ့သို့ Gemini Token Glitch ကို "လူအဟန်ဆောင်" အဖြစ် အတိအကျ ပြင်ပေးခြင်း
         .replace(/လူအ\s*[a-zA-Z0-9_\\]+\s*ဆောင်/g, 'လူအဟန်ဆောင်')
-        // 2. Unicode Surrogate အပျက်များ (ud83cudf38, \u1234, ud) နှင့် Emoji များကို ဖယ်ရှားခြင်း
         .replace(/\\?u[dD][89abAB][0-9a-fA-F]{2}\s*\\?u[dD][c-fC-F][0-9a-fA-F]{2}/g, '')
         .replace(/\\?u[dD][89abABc-fC-F][0-9a-fA-F]{2}/g, '')
         .replace(/\\u[0-9a-fA-F]{4}/g, '')
         .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1FA00}-\u{1FAFF}]/gu, '')
-        // 3. စာသားထဲ မှားပါလာတတ်သော Timestamp အပိုင်းအစများကို ဖယ်ရှားခြင်း
         .replace(/\d*\s*\d{2}:\d{2}:\d{2}[.,]\d{3}\s*(?:-->|->|→)\s*\d{2}:\d{2}:\d{2}[.,]\d{3}/g, '')
-        // 4. Markdown **နာမည်** ကို <b>နာမည်</b> အဖြစ် ယာယီပြောင်းခြင်း
         .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
 
-      // 5. ရွေးချယ်ထားသော နာမည်ပုံစံအလိုက် ပြောင်းလဲခြင်း
       if (nameStyle === 'brackets') {
         cleaned = cleaned.replace(/<b>\s*(.+?)\s*<\/b>/gi, '【$1】');
       } else if (nameStyle === 'clean') {
         cleaned = cleaned.replace(/<\/?b>/gi, '');
       }
 
-      // 6. မြန်မာစာတန်းထိုးထဲတွင် ကျန်ရှိနေသေးသော အင်္ဂလိပ်ကုဒ်အပိုင်းအစများ (ud, u, b, html tags စသည်) အားလုံးကို အပြီးတိုင် ဖယ်ရှားခြင်း
       if (isMyanmar) {
         cleaned = cleaned.replace(/\\?[a-zA-Z]+[0-9a-fA-F]+[a-zA-Z0-9]*/g, '');
         if (nameStyle !== 'html_bold') {
@@ -278,7 +303,6 @@
         renderSrtOutput();
       } else {
         const out = document.getElementById('srtOutput');
-        // Textarea ထဲရှိ စာသားများကိုလည်း တိုက်ရိုက် သန့်စင်ပေးခြင်း
         out.value = out.value
           .replace(/လူအ\s*[a-zA-Z0-9_\\]+\s*ဆောင်/g, 'လူအဟန်ဆောင်')
           .replace(/<\/?b>/gi, '')
@@ -286,7 +310,7 @@
           .replace(/\b[a-zA-Z]{1,4}\b/g, '')
           .replace(/  +/g, ' ');
       }
-      showToast("🧹 အမှိုက်ကုဒ်များ (ud, <b>) အားလုံးကို သန့်စင်ပြီးပါပြီ!");
+      showToast("🧹 အမှိုက်ကုဒ်များ အားလုံးကို သန့်စင်ပြီးပါပြီ!");
     }
 
     function updateKeyBadge(gKey, gemKey) {
@@ -371,12 +395,12 @@
         icon.innerText = "⏳";
         icon.className = "w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-[10px] animate-ring";
         text.className = "text-cyan-300 font-bold flex items-center gap-2";
-        bar.style.width = step === 0 ? "25%" : step === 1 ? "60%" : "85%";
+        bar.style.width = step === 0 ? "20%" : step === 1 ? "45%" : step === 2 ? "65%" : "88%";
       } else if (status === 'done') {
         icon.innerText = "✓";
         icon.className = "w-5 h-5 rounded-full bg-emerald-500 text-slate-950 font-bold flex items-center justify-center text-[10px]";
         text.className = "text-emerald-400 font-bold flex items-center gap-2";
-        if (step === 2) bar.style.width = "100%";
+        if (step === 3) bar.style.width = "100%";
       } else {
         icon.innerText = step + 1;
         icon.className = "w-5 h-5 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-[10px]";
@@ -504,10 +528,13 @@
       return refined;
     }
 
-    async function callGeminiWithFallback(prompt, apiKey, preferredModel) {
+    async function callGeminiWithFallback(prompt, apiKey, preferredModel, expectJson = true) {
       const modelsToTry = [preferredModel, "gemini-2.5-flash", "gemini-2.0-flash"];
       const uniqueModels = [...new Set(modelsToTry)];
       let lastError = "";
+
+      const genConfig = { temperature: 0.2 };
+      if (expectJson) genConfig.responseMimeType = "application/json";
 
       for (const model of uniqueModels) {
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
@@ -515,10 +542,7 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: {
-              temperature: 0.1,
-              responseMimeType: "application/json"
-            }
+            generationConfig: genConfig
           })
         });
 
@@ -530,6 +554,44 @@
         }
       }
       throw new Error(lastError);
+    }
+
+    // 🧠 Step 2: ဗီဒီယိုတစ်ခုလုံး၏ ဇာတ်လမ်းအကြောင်းအရာ၊ ဇာတ်ကောင်များနှင့် သုံးသင့်သော နာမ်စား/လေသံကို AI ဖြင့် ကြိုတင်သုံးသပ်ခြင်း
+    async function analyzeVideoContext(segments, apiKey, preferredModel, selectedGenre, userHint) {
+      const sampleLines = segments.slice(0, 80).map((s, idx) => `${idx + 1}. ${s.origText}`).join('\n');
+
+      const genreMap = {
+        auto: "Detect the exact genre automatically from the dialogue.",
+        wuxia: "Chinese Historical / Wuxia / Xianxia / Royal Court Drama (တရုတ် ရှေးဟောင်း သိုင်းနှင့် နန်းတွင်းကား).",
+        modern: "Modern Drama / Romance / CEO / Urban Series (ခေတ်ပေါ် ဇာတ်လမ်းတွဲ).",
+        action: "Action / Crime / Thriller (အက်ရှင်နှင့် မှုခင်းကား).",
+        recap: "Movie Recap / Narrator Commentary (ဇာတ်လမ်းအကျဉ်း ပြောပြချက်)."
+      };
+
+      const prompt = `Analyze the following subtitle transcript from a video and create a Translation Style & Character Guide for translating it into natural spoken Myanmar (Burmese).
+
+Genre Setting: ${genreMap[selectedGenre] || genreMap.auto}
+User Note: ${userHint || "None"}
+
+Sample Dialogue:
+${sampleLines}
+
+Return a JSON object with:
+1. "genre_my": Short Burmese description of the video's genre and tone.
+2. "story_context": Brief summary of the scene/story and relationships between speakers.
+3. "character_glossary": Consistent Burmese transliterations for character/clan/place names and titles, plus exact Burmese pronouns to use (e.g. ငါ/မင်း, ကျွန်တော်/အစ်မကြီး, အရှင်သခင်လေး, နယ်စားကြီး, etc.).`;
+
+      try {
+        const resData = await callGeminiWithFallback(prompt, apiKey, preferredModel, true);
+        const rawText = resData.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+        return JSON.parse(rawText);
+      } catch (e) {
+        return {
+          genre_my: "သဘာဝ မြန်မာစကားပြောဟန်",
+          story_context: userHint || "Drama dialogue",
+          character_glossary: "Use consistent, natural Burmese pronouns and names."
+        };
+      }
     }
 
     function renderSrtOutput() {
@@ -553,6 +615,8 @@
       const preferredModel = document.getElementById('geminiModel').value;
       const enableVoiceSync = document.getElementById('voiceSyncToggle').checked;
       const nameStyle = document.getElementById('nameStyleSelect').value;
+      const selectedGenre = document.getElementById('genreSelect').value;
+      const userHint = document.getElementById('customContext').value.trim();
       const file = document.getElementById('mediaFile').files[0];
       const btn = document.getElementById('startBtn');
 
@@ -567,12 +631,14 @@
       btn.innerHTML = `<span>⏳ AI အလုပ်လုပ်နေပါသည်...</span>`;
       
       document.getElementById('statusBox').classList.add('hidden');
+      document.getElementById('contextSummaryBox').classList.add('hidden');
       document.getElementById('resultArea').classList.add('hidden');
       document.getElementById('progressCard').classList.remove('hidden');
       
       updateStep(0, 'active', 'ဗီဒီယိုထဲမှ အသံခွဲထုတ်ပြီး ဆိုဒ်ချုံ့နေပါသည်...');
       updateStep(1, 'idle', 'Groq Whisper ဖြင့် အသံနှင့်အညီ အချိန်ဖမ်းခြင်း');
-      updateStep(2, 'idle', 'Gemini AI ဖြင့် အချိန်မပျက် သန့်စင်မြန်မာပြန်ခြင်း');
+      updateStep(2, 'idle', 'ဇာတ်လမ်းအကြောင်းအရာနှင့် လေသံကို သုံးသပ်ခြင်း');
+      updateStep(3, 'idle', 'Gemini AI ဖြင့် သဘာဝကျကျ မြန်မာပြန်ဆိုခြင်း');
 
       try {
         // Step 0: Extract & Chunk Audio
@@ -620,15 +686,33 @@
 
         updateStep(1, 'done', `အသံဖမ်းယူမှု ပြီးဆုံးပါပြီ (စာကြောင်းရေ ${finalSegments.length} ကြောင်း)`);
 
-        // Step 2: Gemini Pure Myanmar Batch Translation
-        updateStep(2, 'active');
-        const BATCH_SIZE = 45;
+        // Step 2: Analyze Video Context & Character Glossary
+        updateStep(2, 'active', 'ဗီဒီယိုဇာတ်လမ်း၊ ဇာတ်ကောင်နှင့် လေသံကို AI သုံးသပ်နေပါသည်...');
+        const contextGuide = await analyzeVideoContext(finalSegments, geminiKey, preferredModel, selectedGenre, userHint);
+        updateStep(2, 'done', `ဇာတ်လမ်းသုံးသပ်မှု ပြီးဆုံးပါပြီ (${contextGuide.genre_my || 'သဘာဝစကားပြောဟန်'})`);
+
+        if (contextGuide.genre_my) {
+          const ctxBox = document.getElementById('contextSummaryBox');
+          ctxBox.innerText = `🎬 AI သုံးသပ်ချက်: ${contextGuide.genre_my}`;
+          ctxBox.classList.remove('hidden');
+        }
+
+        // Step 3: Context-Aware Natural Myanmar Batch Translation (with Sliding Window Continuity)
+        updateStep(3, 'active');
+        const BATCH_SIZE = 40;
         const totalBatches = Math.ceil(finalSegments.length / BATCH_SIZE);
+        let previousTranslatedContext = "";
 
         for (let b = 0; b < totalBatches; b++) {
-          updateStep(2, 'active', `Gemini AI ဖြင့် မြန်မာပြန်နေသည် (အပိုင်း ${b + 1}/${totalBatches})...`);
+          updateStep(3, 'active', `သဘာဝကျကျ မြန်မာပြန်နေသည် (အပိုင်း ${b + 1}/${totalBatches})...`);
           const startIdx = b * BATCH_SIZE;
           const batchSlice = finalSegments.slice(startIdx, startIdx + BATCH_SIZE);
+
+          // နောက်ဆက်တွဲ စာကြောင်းများကိုပါ ကြိုမြင်နိုင်ရန် Next Lookahead ၃ ကြောင်း ထည့်ပေးခြင်း
+          const nextLookahead = finalSegments
+            .slice(startIdx + BATCH_SIZE, startIdx + BATCH_SIZE + 3)
+            .map(s => s.origText)
+            .join(' | ');
 
           const inputPayload = batchSlice.map((seg, i) => ({
             id: i,
@@ -637,27 +721,38 @@
           }));
 
           const syncInstruction = enableVoiceSync
-            ? "Keep each Burmese translation concise and natural so it can be spoken comfortably within its `duration_sec`."
-            : "Translate naturally and accurately into spoken Burmese.";
+            ? "Match each Burmese line's length and speaking rhythm to `duration_sec` so it fits the actor's voice timing."
+            : "Translate into natural, expressive spoken Burmese.";
 
           const nameInstruction = (nameStyle === 'clean')
             ? "Do NOT use any HTML tags (no <b> tags) or brackets."
             : "Wrap character names and titles in <b>...</b> tags.";
 
-          const prompt = `You are a master Burmese subtitle translator for movies and dramas.
-Translate each item's "text" into 100% pure, natural spoken Myanmar (Burmese) script.
+          const prompt = `You are Myanmar's top professional movie & drama subtitle translator.
+Your goal is to translate the subtitle lines into 100% natural, emotionally fitting, conversational Myanmar (Burmese) that sounds like real people talking in the movie—NOT stiff or literal machine translation.
 
-STRICT RULES:
-1. ${syncInstruction}
-2. ${nameInstruction}
-3. When translating phrases like "play dumb" or "pretend to be foolish", always use pure Burmese "မသိချင်ယောင်ဆောင်" or "အရူးဟန်ဆောင်".
-4. Write ONLY in Myanmar script. Do NOT include any English letters, emojis, or timestamps.
-5. Return a valid JSON array of objects in the exact same order: [{"id": 0, "my": "မြန်မာပြန်စာသား"}, ...]
+=== VIDEO CONTEXT & STYLE GUIDE ===
+- Genre & Tone: ${contextGuide.genre_my}
+- Story Context: ${contextGuide.story_context}
+- Character Glossary & Pronouns: ${JSON.stringify(contextGuide.character_glossary)}
+- User Hint: ${userHint || "None"}
+- Previous Translated Lines (for continuity): ${previousTranslatedContext || "Start of video"}
+- Upcoming Lines After This Batch (for sentence flow): ${nextLookahead || "End of video"}
+
+=== NATURAL MYANMAR TRANSLATION RULES ===
+1. NO LITERAL TRANSLATION: Never translate word-for-word like a textbook (e.g., instead of stiff "ပျော်ရွှင်စွာ ဆင်နွှဲကြပါစို့", use natural spoken Burmese like "အားလုံးပဲ ပျော်ပျော်ပါးပါး ပွဲခံကြစို့" or "ပျော်ပျော်ကြီး ဂုဏ်ပြုကြရအောင်").
+2. CONNECTED SENTENCES: Many sentences are split across 2 or 3 consecutive subtitle lines. Read the surrounding lines so split sentences flow smoothly in Burmese grammar from one line to the next!
+3. EMOTION & PARTICLES: Use natural Burmese spoken particles (ဗျာ၊ ရှင့်၊ ကွ၊ နော်၊ တာပေါ့၊ စမ်းပါ၊ ဦးမယ်၊ လိုက်တော့) matching the character's age, status, anger, respect, or urgency.
+4. IDIOMS: For "play dumb / pretend to be foolish", always use pure Burmese "မသိချင်ယောင်ဆောင်" or "အရူးဟန်ဆောင်".
+5. ${syncInstruction}
+6. ${nameInstruction}
+7. Write 100% in pure Myanmar script. NEVER include English letters, emojis, or timestamps.
+8. Return ONLY a valid JSON array of objects in the exact same order: [{"id": 0, "my": "သဘာဝကျသော မြန်မာစာသား"}, ...]
 
 Input JSON:
 ${JSON.stringify(inputPayload)}`;
 
-          const geminiData = await callGeminiWithFallback(prompt, geminiKey, preferredModel);
+          const geminiData = await callGeminiWithFallback(prompt, geminiKey, preferredModel, true);
           const rawJsonText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
 
           let parsedList = [];
@@ -674,14 +769,20 @@ ${JSON.stringify(inputPayload)}`;
               seg.myTextRaw = found.my;
             }
           });
+
+          // နောက်အပိုင်း (Next Batch) အတွက် နောက်ဆုံး ၄ ကြောင်းကို မှတ်ထားပေးခြင်း
+          previousTranslatedContext = batchSlice
+            .slice(-4)
+            .map(s => `${s.origText} => ${s.myTextRaw}`)
+            .join(' | ');
         }
 
-        updateStep(2, 'done', 'သန့်စင်သော မြန်မာဘာသာပြန်ဆိုမှု ၁၀၀% ပြီးဆုံးပါပြီ!');
+        updateStep(3, 'done', 'သဘာဝကျသော မြန်မာဘာသာပြန်ဆိုမှု ၁၀၀% ပြီးဆုံးပါပြီ!');
 
         // Display Output
         switchTab('my');
         document.getElementById('resultArea').classList.remove('hidden');
-        setAlert("🎉 အမှိုက်ကုဒ် (ud, <b>) လုံးဝမပါသော သန့်စင်ပြီးသား မြန်မာစာတန်းထိုး ရရှိပါပြီ!", false);
+        setAlert("🎉 ဗီဒီယိုဇာတ်လမ်းအလိုက် သဘာဝကျကျ ပြန်ဆိုထားသော မြန်မာစာတန်းထိုး ရရှိပါပြီ!", false);
 
       } catch (err) {
         setAlert("Error: " + err.message, true);
@@ -692,7 +793,7 @@ ${JSON.stringify(inputPayload)}`;
       } finally {
         btn.disabled = false;
         btn.classList.remove('opacity-50');
-        btn.innerHTML = `<span>✨ SRT ထုတ်ပြီး မြန်မာပြန်မည်</span>`;
+        btn.innerHTML = `<span>✨ SRT ထုတ်ပြီး သဘာဝကျကျ မြန်မာပြန်မည်</span>`;
       }
     }
 
