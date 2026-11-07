@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AI Myanmar Subtitle Studio v6.0</title>
+  <title>AI Myanmar Subtitle Studio v6.5</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -36,7 +36,7 @@
     <div class="text-center pt-3 pb-5">
       <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold mb-3">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        v6.0 Smart Context & Natural Burmese
+        v6.5 Anti-Disconnect & Auto-Retry
       </div>
       <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">
         <strong>Video to Myanmar SRT</strong>
@@ -128,7 +128,7 @@
     <div class="glass rounded-2xl p-4 mb-4 shadow-xl">
       <label class="block text-xs font-bold text-slate-300 mb-2.5 flex items-center justify-between">
         <span class="flex items-center gap-1.5"><span>📁</span> Video သို့မဟုတ် Audio ဖိုင်ရွေးချယ်ပါ</span>
-        <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20 font-bold">Unlimited Size</span>
+        <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20 font-bold">Fast Audio Mode</span>
       </label>
       
       <label for="mediaFile" class="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-cyan-400/70 rounded-xl p-5 cursor-pointer bg-slate-950/40 transition group">
@@ -139,7 +139,7 @@
           ဖုန်းထဲမှ ဖိုင်ရွေးရန် ဒီနေရာကို နှိပ်ပါ
         </span>
         <span id="fileSizeDisplay" class="text-[11px] text-slate-400 mt-1 text-center">
-          ဖိုင်ဆိုဒ် ကြီးသော်လည်း အလိုအလျောက် အသံချုံ့ပေးပါမည်
+          အင်တာနက်လိုင်း သက်သာစေရန် အသံသီးသန့် အလိုအလျောက် ချုံ့ပို့ပေးပါမည်
         </span>
         <input type="file" id="mediaFile" accept="video/*,audio/*" class="hidden" onchange="handleFileSelect(this)">
       </label>
@@ -227,8 +227,11 @@
   <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-800 border border-cyan-500/40 text-cyan-300 px-4 py-2.5 rounded-full text-xs font-bold shadow-2xl hidden z-50"></div>
 
   <script>
-    let finalSegments = []; // [{ start, end, origText, myTextRaw }]
+    let finalSegments = [];
     let activeTab = "my";
+    let cachedArrayBuffer = null;
+    let cachedFileName = "";
+    let cachedFileType = "";
 
     window.onload = () => {
       const gKey = localStorage.getItem('groq_key') || "";
@@ -263,6 +266,24 @@
         renderSrtOutput();
         showToast("✓ နာမည်ဖော်ပြသည့်ပုံစံ ပြောင်းလဲပြီးပါပြီ!");
       }
+    }
+
+    // 🔄 Auto-Retry Fetch: VPN သို့မဟုတ် လိုင်းခေတ္တပြတ်သွားပါက အလိုအလျောက် ၃ ကြိမ် ပြန်ချိတ်ဆက်ပေးသည့်စနစ်
+    async function fetchWithRetry(url, options, maxRetries = 3, onRetryMsg = null) {
+      let lastErr;
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          const res = await fetch(url, options);
+          return res;
+        } catch (err) {
+          lastErr = err;
+          if (attempt < maxRetries) {
+            if (onRetryMsg) onRetryMsg(attempt, maxRetries);
+            await new Promise(r => setTimeout(r, 1800 * attempt));
+          }
+        }
+      }
+      throw new Error("အင်တာနက် သို့မဟုတ် VPN လိုင်းပြတ်တောက်နေပါသည် (Failed to fetch)။ VPN ကို ခဏပိတ်ပြီး သို့မဟုတ် လိုင်းပြန်ချိတ်ပြီး ထပ်စမ်းကြည့်ပါ။");
     }
 
     // 🛡️ Pure Myanmar Sanitizer
@@ -345,7 +366,8 @@
       showToast("✓ API Keys နှင့် Model ကို သိမ်းဆည်းပြီးပါပြီ!");
     }
 
-    function handleFileSelect(input) {
+    // 📁 ဖိုင်ရွေးလိုက်သည်နှင့် Memory ထဲ တစ်ခါတည်း သိမ်းဆည်းထားပေးခြင်း (Android ဖိုင်လင့်ခ်ပြတ်ခြင်းမှ ကာကွယ်ရန်)
+    async function handleFileSelect(input) {
       const file = input.files[0];
       const nameEl = document.getElementById('fileNameDisplay');
       const sizeEl = document.getElementById('fileSizeDisplay');
@@ -353,13 +375,19 @@
       if (!file) return;
       const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
       nameEl.innerText = file.name;
+      sizeEl.innerText = `⏳ ဖိုင်ကို Memory ထဲ သိမ်းဆည်းနေပါသည် (${sizeMB} MB)...`;
+      sizeEl.className = "text-[11px] text-amber-300 font-medium mt-1 text-center";
 
-      if (sizeMB > 20) {
-        sizeEl.innerText = `📦 ဖိုင်ဆိုဒ်: ${sizeMB} MB (Auto Audio Compression စနစ်ဖြင့် အသံချုံ့ပေးပါမည်)`;
-        sizeEl.className = "text-[11px] text-cyan-400 font-medium mt-1 text-center";
-      } else {
-        sizeEl.innerText = `✓ ဖိုင်ဆိုဒ်: ${sizeMB} MB (တိုက်ရိုက် ပို့ဆောင်နိုင်ပါသည်)`;
+      try {
+        cachedArrayBuffer = await file.arrayBuffer();
+        cachedFileName = file.name;
+        cachedFileType = file.type || "video/mp4";
+        sizeEl.innerText = `✓ ဖိုင်ဆိုဒ်: ${sizeMB} MB (အသံချုံ့ပြီး အမြန်ပို့ဆောင်ရန် အသင့်ဖြစ်ပါပြီ)`;
         sizeEl.className = "text-[11px] text-emerald-400 font-medium mt-1 text-center";
+      } catch (e) {
+        cachedArrayBuffer = null;
+        sizeEl.innerText = `✓ ဖိုင်ဆိုဒ်: ${sizeMB} MB`;
+        sizeEl.className = "text-[11px] text-cyan-400 font-medium mt-1 text-center";
       }
     }
 
@@ -442,45 +470,49 @@
       return new Blob([out], { type: 'audio/wav' });
     }
 
+    // ⚡ ဗီဒီယိုဖိုင်အားလုံးကို ပေါ့ပါးသော 12kHz အသံဖိုင်အဖြစ် အလိုအလျောက် ချုံ့ပေးခြင်း (VPN ဖြင့် ပို့ရာတွင် လိုင်းမပြတ်စေရန်)
     async function extractAndChunkAudio(file) {
-      if (file.size <= 20 * 1024 * 1024) {
-        return [{ blob: file, fileName: file.name, offsetSeconds: 0 }];
+      const rawBuffer = cachedArrayBuffer ? cachedArrayBuffer.slice(0) : await file.arrayBuffer();
+
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const decodedBuffer = await audioCtx.decodeAudioData(rawBuffer);
+
+        const TARGET_RATE = 12000; // 12kHz Mono သည် အသံကြည်လင်ပြီး ဖိုင်ဆိုဒ် အလွန်သေးငယ်သည် (~1.3MB per minute)
+        const CHUNK_SECONDS = 300; // ၅ မိနစ်လျှင် တစ်ပိုင်း (~7MB per chunk) ခွဲပို့သဖြင့် လိုင်းနှေးသော်လည်း မပြတ်နိုင်ပါ
+        const totalDuration = decodedBuffer.duration;
+        const totalChunks = Math.ceil(totalDuration / CHUNK_SECONDS);
+        const chunks = [];
+
+        for (let i = 0; i < totalChunks; i++) {
+          updateStep(0, 'active', `အသံခွဲထုတ်ပြီး ဆိုဒ်ချုံ့နေသည် (အပိုင်း ${i + 1}/${totalChunks})...`);
+          const startTime = i * CHUNK_SECONDS;
+          const duration = Math.min(CHUNK_SECONDS, totalDuration - startTime);
+          const frameCount = Math.ceil(duration * TARGET_RATE);
+
+          const offlineCtx = new OfflineAudioContext(1, frameCount, TARGET_RATE);
+          const source = offlineCtx.createBufferSource();
+          source.buffer = decodedBuffer;
+          source.connect(offlineCtx.destination);
+          source.start(0, startTime, duration);
+
+          const renderedBuffer = await offlineCtx.startRendering();
+          const wavBlob = audioBufferToWavBlob(renderedBuffer);
+
+          chunks.push({
+            blob: wavBlob,
+            fileName: `chunk_${i + 1}.wav`,
+            offsetSeconds: startTime
+          });
+        }
+
+        if (audioCtx.close) await audioCtx.close();
+        return chunks;
+      } catch (decodeErr) {
+        // အကယ်၍ Browser က အသံချုံ့မရသော ဖိုင်အမျိုးအစားဖြစ်ပါက Memory Blob ဖြင့် တိုက်ရိုက်ပို့မည်
+        const fallbackBlob = new Blob([rawBuffer], { type: cachedFileType || file.type || 'video/mp4' });
+        return [{ blob: fallbackBlob, fileName: cachedFileName || file.name, offsetSeconds: 0 }];
       }
-
-      const arrayBuffer = await file.arrayBuffer();
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const decodedBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-
-      const TARGET_RATE = 16000;
-      const CHUNK_SECONDS = 600;
-      const totalDuration = decodedBuffer.duration;
-      const totalChunks = Math.ceil(totalDuration / CHUNK_SECONDS);
-      const chunks = [];
-
-      for (let i = 0; i < totalChunks; i++) {
-        updateStep(0, 'active', `အသံခွဲထုတ်ပြီး ချုံ့နေသည် (အပိုင်း ${i + 1}/${totalChunks})...`);
-        const startTime = i * CHUNK_SECONDS;
-        const duration = Math.min(CHUNK_SECONDS, totalDuration - startTime);
-        const frameCount = Math.ceil(duration * TARGET_RATE);
-
-        const offlineCtx = new OfflineAudioContext(1, frameCount, TARGET_RATE);
-        const source = offlineCtx.createBufferSource();
-        source.buffer = decodedBuffer;
-        source.connect(offlineCtx.destination);
-        source.start(0, startTime, duration);
-
-        const renderedBuffer = await offlineCtx.startRendering();
-        const wavBlob = audioBufferToWavBlob(renderedBuffer);
-
-        chunks.push({
-          blob: wavBlob,
-          fileName: `chunk_${i + 1}.wav`,
-          offsetSeconds: startTime
-        });
-      }
-
-      if (audioCtx.close) await audioCtx.close();
-      return chunks;
     }
 
     function applyVoiceSyncRefinement(rawSegments, words, offsetSeconds, enableVoiceSync) {
@@ -537,14 +569,18 @@
       if (expectJson) genConfig.responseMimeType = "application/json";
 
       for (const model of uniqueModels) {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: genConfig
-          })
-        });
+        const res = await fetchWithRetry(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: genConfig
+            })
+          },
+          3
+        );
 
         if (res.ok) {
           return await res.json();
@@ -556,7 +592,6 @@
       throw new Error(lastError);
     }
 
-    // 🧠 Step 2: ဗီဒီယိုတစ်ခုလုံး၏ ဇာတ်လမ်းအကြောင်းအရာ၊ ဇာတ်ကောင်များနှင့် သုံးသင့်သော နာမ်စား/လေသံကို AI ဖြင့် ကြိုတင်သုံးသပ်ခြင်း
     async function analyzeVideoContext(segments, apiKey, preferredModel, selectedGenre, userHint) {
       const sampleLines = segments.slice(0, 80).map((s, idx) => `${idx + 1}. ${s.origText}`).join('\n');
 
@@ -624,7 +659,7 @@ Return a JSON object with:
         document.getElementById('settingsPanel').open = true;
         return showToast("⚠️ API Key နှစ်ခုလုံး အရင်ထည့်ပေးပါ");
       }
-      if (!file) return showToast("⚠️ Video သို့မဟုတ် Audio ဖိုင် အရင်ရွေးပေးပါ");
+      if (!file && !cachedArrayBuffer) return showToast("⚠️ Video သို့မဟုတ် Audio ဖိုင် အရင်ရွေးပေးပါ");
 
       btn.disabled = true;
       btn.classList.add('opacity-50');
@@ -641,11 +676,12 @@ Return a JSON object with:
       updateStep(3, 'idle', 'Gemini AI ဖြင့် သဘာဝကျကျ မြန်မာပြန်ဆိုခြင်း');
 
       try {
-        // Step 0: Extract & Chunk Audio
+        // Step 0: Extract & Compress Audio into lightweight WAV chunks
         const audioChunks = await extractAndChunkAudio(file);
-        updateStep(0, 'done', `အသံပြင်ဆင်မှု ပြီးဆုံးပါပြီ (စုစုပေါင်း ${audioChunks.length} ပိုင်း)`);
+        const firstChunkMB = (audioChunks[0].blob.size / (1024 * 1024)).toFixed(2);
+        updateStep(0, 'done', `အသံချုံ့ပြီးပါပြီ (${firstChunkMB} MB - စုစုပေါင်း ${audioChunks.length} ပိုင်း)`);
 
-        // Step 1: Transcribe All Chunks with Groq Whisper
+        // Step 1: Transcribe All Chunks with Groq Whisper (with Auto-Retry)
         updateStep(1, 'active');
         finalSegments = [];
 
@@ -653,20 +689,36 @@ Return a JSON object with:
           const chunk = audioChunks[c];
           updateStep(1, 'active', `Groq Whisper ဖြင့် အသံဖမ်းနေသည် (အပိုင်း ${c + 1}/${audioChunks.length})...`);
 
-          const formData = new FormData();
-          formData.append("file", chunk.blob, chunk.fileName);
-          formData.append("model", "whisper-large-v3-turbo");
-          formData.append("response_format", "verbose_json");
-          formData.append("timestamp_granularities[]", "segment");
-          if (enableVoiceSync) {
-            formData.append("timestamp_granularities[]", "word");
-          }
+          const makeGroqRequest = async () => {
+            const formData = new FormData();
+            formData.append("file", chunk.blob, chunk.fileName);
+            formData.append("model", "whisper-large-v3-turbo");
+            formData.append("response_format", "verbose_json");
+            formData.append("timestamp_granularities[]", "segment");
+            if (enableVoiceSync) {
+              formData.append("timestamp_granularities[]", "word");
+            }
 
-          const groqRes = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
-            method: "POST",
-            headers: { "Authorization": `Bearer ${groqKey}` },
-            body: formData
-          });
+            return await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
+              method: "POST",
+              headers: { "Authorization": `Bearer ${groqKey}` },
+              body: formData
+            });
+          };
+
+          let groqRes;
+          for (let attempt = 1; attempt <= 3; attempt++) {
+            try {
+              groqRes = await makeGroqRequest();
+              break;
+            } catch (netErr) {
+              if (attempt === 3) {
+                throw new Error("Groq သို့ ပို့ဆောင်ရာတွင် အင်တာနက်/VPN လိုင်းပြတ်တောက်သွားပါသည် (Failed to fetch)။ VPN လိုင်းစစ်ဆေးပြီး ထပ်စမ်းကြည့်ပါ။");
+              }
+              updateStep(1, 'active', `🔄 လိုင်းခေတ္တပြတ်သွားသဖြင့် ပြန်ချိတ်နေသည် (${attempt}/3)...`);
+              await new Promise(r => setTimeout(r, 2000 * attempt));
+            }
+          }
 
           if (!groqRes.ok) {
             const errData = await groqRes.json().catch(() => ({}));
@@ -697,7 +749,7 @@ Return a JSON object with:
           ctxBox.classList.remove('hidden');
         }
 
-        // Step 3: Context-Aware Natural Myanmar Batch Translation (with Sliding Window Continuity)
+        // Step 3: Context-Aware Natural Myanmar Batch Translation
         updateStep(3, 'active');
         const BATCH_SIZE = 40;
         const totalBatches = Math.ceil(finalSegments.length / BATCH_SIZE);
@@ -708,7 +760,6 @@ Return a JSON object with:
           const startIdx = b * BATCH_SIZE;
           const batchSlice = finalSegments.slice(startIdx, startIdx + BATCH_SIZE);
 
-          // နောက်ဆက်တွဲ စာကြောင်းများကိုပါ ကြိုမြင်နိုင်ရန် Next Lookahead ၃ ကြောင်း ထည့်ပေးခြင်း
           const nextLookahead = finalSegments
             .slice(startIdx + BATCH_SIZE, startIdx + BATCH_SIZE + 3)
             .map(s => s.origText)
@@ -770,7 +821,6 @@ ${JSON.stringify(inputPayload)}`;
             }
           });
 
-          // နောက်အပိုင်း (Next Batch) အတွက် နောက်ဆုံး ၄ ကြောင်းကို မှတ်ထားပေးခြင်း
           previousTranslatedContext = batchSlice
             .slice(-4)
             .map(s => `${s.origText} => ${s.myTextRaw}`)
